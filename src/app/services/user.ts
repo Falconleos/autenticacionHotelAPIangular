@@ -15,4 +15,13 @@ export class UserService {
   getAll(): Observable<UserDtoResponse[]> {
     return this.http.get<UserDtoResponse[]>(this.API_URL);
   }
+
+  deleteUser(id: number): Observable<void> {
+  return this.http.delete<void>(`http://localhost:8080/private/user/${id}`);
+}
+
+createUser(user: any): Observable<UserDtoResponse> {
+    return this.http.post<UserDtoResponse>(this.API_URL, user);
+  }
+
 }

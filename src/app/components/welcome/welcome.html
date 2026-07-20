@@ -1,35 +1,46 @@
 <div class="container">
-  <h1>¡Bienvenido al sistema!</h1>
-  <h2>Lista de Usuarios Registrados</h2>
+  <h1>¡Bienvenido al sistema de gestión hotelera!</h1>
+  <p class="subtitle">Seleccioná un módulo para comenzar a trabajar</p>
 
-  <div *ngIf="usersList && usersList.length > 0; else noUsers">
-    <table class="user-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Apellido</th>
-          <th>DNI</th>
-          <th>Email</th>
-          <th>Rol principal</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let user of usersList">
-          <td>{{ user.id }}</td>
-          <td>{{ user.name }}</td>
-          <td>{{ user.surname }}</td>
-          <td>{{ user.dni }}</td>
-          <td>{{ user.email }}</td>
-          <td>{{ user.roles[0]?.name }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="dashboard-grid">
+    <!-- Menú Usuarios -->
+    <div class="menu-card">
+      <div class="card-icon">👥</div>
+      <h3>Menú Usuarios</h3>
+      <p>Gestión de cuentas, roles y permisos del personal.</p>
+      <button class="btn-menu" routerLink="/usuarios">Ingresar</button>
+    </div>
+
+    <!-- Menú Reservas -->
+    <div class="menu-card disabled">
+      <div class="card-icon">📅</div>
+      <h3>Menú Reservas</h3>
+      <p>Alta, modificación y control de reservas activas.</p>
+      <button class="btn-menu" disabled>Próximamente</button>
+    </div>
+
+    <!-- Menú Check-In -->
+    <div class="menu-card disabled">
+      <div class="card-icon">🔑</div>
+      <h3>Menú Check-In</h3>
+      <p>Registro de entradas, salidas y asignación de llaves.</p>
+      <button class="btn-menu" disabled>Próximamente</button>
+    </div>
+
+    <!-- Menú Empleados -->
+    <div class="menu-card disabled">
+      <div class="card-icon">💼</div>
+      <h3>Menú Empleados</h3>
+      <p>Control de turnos, horarios y legajos del staff.</p>
+      <button class="btn-menu" disabled>Próximamente</button>
+    </div>
+
+    <!-- Menú Habitaciones -->
+    <div class="menu-card disabled">
+      <div class="card-icon">🏨</div>
+      <h3>Menú Habitaciones</h3>
+      <p>Estado de limpieza, mantenimiento y categorías.</p>
+      <button class="btn-menu" disabled>Próximamente</button>
+    </div>
   </div>
-
-  <ng-template #noUsers>
-    <p class="alert-message">
-      No hay usuarios registrados o no tenés el rol necesario (ADMIN / RECEPCIONIST) para verlos.
-    </p>
-  </ng-template>
 </div>

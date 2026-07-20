@@ -1,0 +1,36 @@
+<div class="container">
+  <h1>Lista de Usuarios</h1>
+
+  <!-- Filtro y botón de creación -->
+  <div class="actions-bar">
+    <input type="text" placeholder="Filtrar por nombre o DNI..." (input)="onFilter($event)">
+    <button routerLink="/usuarios/crear">Nuevo Usuario</button>
+  </div>
+
+  <table class="user-table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>DNI</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Usamos 'filteredUsers' en lugar de 'usersList' -->
+      <tr *ngFor="let user of filteredUsers">
+        <td>{{ user.name }}</td>
+        <td>{{ user.surname }}</td>
+        <td>{{ user.dni }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.roles[0]?.name }}</td>
+        <td>
+          <button (click)="editUser(user.id)">✏️</button> <!-- Lápiz -->
+          <button (click)="deleteUser(user.id)">❌</button> <!-- X -->
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

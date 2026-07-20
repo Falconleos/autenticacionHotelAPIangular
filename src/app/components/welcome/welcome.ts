@@ -2,11 +2,12 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // <-- Imp
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user';
 import { UserDtoResponse } from '../../models/user-response.model';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-welcome',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,RouterLink],
   templateUrl: './welcome.html',
   styleUrl: './welcome.css'
 })
