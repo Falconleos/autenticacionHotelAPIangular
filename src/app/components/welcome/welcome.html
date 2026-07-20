@@ -1,0 +1,35 @@
+<div class="container">
+  <h1>¡Bienvenido al sistema!</h1>
+  <h2>Lista de Usuarios Registrados</h2>
+
+  <div *ngIf="usersList && usersList.length > 0; else noUsers">
+    <table class="user-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>DNI</th>
+          <th>Email</th>
+          <th>Rol principal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of usersList">
+          <td>{{ user.id }}</td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.surname }}</td>
+          <td>{{ user.dni }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.roles[0]?.name }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #noUsers>
+    <p class="alert-message">
+      No hay usuarios registrados o no tenés el rol necesario (ADMIN / RECEPCIONIST) para verlos.
+    </p>
+  </ng-template>
+</div>
