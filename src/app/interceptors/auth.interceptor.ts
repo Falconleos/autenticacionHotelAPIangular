@@ -12,34 +12,43 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   // 1. Inyectamos el token y configuramos credentials para el intercambio seguro de cookies
   if (token) {
     clonedReq = req.clone({
-      withCredentials: true, // <- Clave para que viajen las cookies HttpOnly
+      withCredentials: true,
       setHeaders: {
         Authorization: `Bearer ${token}`
       }
     });
   } else {
-    // Incluso sin token, permitimos credenciales para el Login/Refresh inicial
     clonedReq = req.clone({ withCredentials: true });
   }
 
   return next(clonedReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401 && !req.url.includes('/public/auth/')) {
+      // CAPTURA: Agregamos 403 para interceptar la expiración típica detectada por Spring Security
+      const isUnauthorizedOrForbidden = error.status === 401 || error.status === 403;
+      const isAuthEndpoint = req.url.includes('/public/auth/');
+
+      if (isUnauthorizedOrForbidden && !isAuthEndpoint) {
+        console.log('Token expirado detectado (Status:', error.status, '). Intentando refresco automático...');
         
         return authService.refreshToken().pipe(
           switchMap((response) => {
-            localStorage.setItem('token', response.token);
+            console.log('¡Token refrescado con éxito!', response);
+            
+            // CAMBIO AQUÍ: Usamos accessToken en lugar de token
+            localStorage.setItem('token', response.accessToken); 
 
             const newReq = req.clone({
-              withCredentials: true, // <- También en la petición reintentada
+              withCredentials: true,
               setHeaders: {
-                Authorization: `Bearer ${response.token}`
+                // CAMBIO AQUÍ: Usamos response.accessToken para la petición reintentada
+                Authorization: `Bearer ${response.accessToken}` 
               }
             });
             
             return next(newReq);
           }),
           catchError((refreshErr) => {
+            console.error('El Refresh Token también expiró o es inválido. Limpiando sesión...');
             authService.logoutClean();
             return throwError(() => refreshErr);
           })
