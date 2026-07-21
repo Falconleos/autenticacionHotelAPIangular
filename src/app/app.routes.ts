@@ -9,6 +9,18 @@ export const routes: Routes = [
   { path: 'welcome', component: Welcome },
   { path: 'usuarios', component: UsuariosComponent },
   { path: 'usuarios/crear', component: UsuarioForm },
-  { path: 'usuarios/editar/:id', component: UsuarioForm }, // <--- Nueva ruta para edición con parámetro de ID
+  { path: 'usuarios/editar/:id', component: UsuarioForm },
+  { 
+    path: 'empleados', 
+    loadComponent: () => import('./components/employees/employees').then(m => m.Employees) 
+  }, 
+  { 
+    path: 'empleados/editar/:id', 
+    loadComponent: () => import('./components/employee-form/employee-form').then(m => m.EmployeeForm) 
+  },
+  { 
+    path: 'empleados/asignar/:userId', 
+    loadComponent: () => import('./components/employee-form/employee-form').then(m => m.EmployeeForm) 
+  },
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];

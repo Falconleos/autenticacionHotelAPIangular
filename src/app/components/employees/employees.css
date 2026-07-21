@@ -1,0 +1,31 @@
+/* Fila atenuada para usuarios no-GUEST que aún no son empleados */
+.row-pending {
+  opacity: 0.55;
+  background-color: #f9f9f9;
+}
+
+.employee-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.employee-table th, .employee-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.employee-table th {
+  background-color: #f4f4f4;
+}
+
+.error-banner {
+  color: red;
+  margin-bottom: 1rem;
+}
+
+button {
+  margin-right: 5px;
+  cursor: pointer;
+}

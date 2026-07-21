@@ -1,0 +1,85 @@
+<div class="employees-container">
+  <h2>Gestión de Personal</h2>
+
+  <div *ngIf="errorMessage" class="error-banner">
+    {{ errorMessage }}
+  </div>
+
+  <table class="employees-table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>DNI</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Turno</th>
+        <th>Sueldo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of tableRows" [ngClass]="{ 'row-pending': !row.isEmployee }">
+        <td>{{ row.name }}</td>
+        <td>{{ row.surname }}</td>
+        <td>{{ row.dni }}</td>
+        <td>{{ row.email }}</td>
+        <td>
+          <span class="role-badge">{{ row.role }}</span>
+        </td>
+        <td>
+          <span *ngIf="row.isEmployee">{{ row.shift || 'Sin turno' }}</span>
+          <span *ngIf="!row.isEmployee" class="text-muted">-</span>
+        </td>
+        <td>
+          <span *ngIf="row.isEmployee">{{ row.salary ? ('$' + row.salary) : 'Sin sueldo' }}</span>
+          <span *ngIf="!row.isEmployee" class="text-muted">-</span>
+        </td>
+        <td class="actions-cell">
+          <!-- Si NO es empleado -->
+          <button 
+            *ngIf="!row.isEmployee" 
+            class="btn-assign" 
+            (click)="assignJob(row.userId)"
+            title="Asignar perfil laboral">
+            ➕ Asignar Empleo {{ row.role }}
+          </button>
+
+          <!-- Si YA es empleado -->
+          <ng-container *ngIf="row.isEmployee">
+            <!-- Botón de modificar turno/sueldo (deshabilitado/oculto para User ID 1) -->
+            <button 
+              *ngIf="row.userId !== 1"
+              class="btn-edit" 
+              (click)="editEmployee(row.employeeId!)" 
+              title="Modificar turno/sueldo">
+              💼
+            </button>
+
+            <!-- Botón de editar usuario (siempre visible para ajustar datos personales si se requiere) -->
+            <button 
+              class="btn-edit-user" 
+              (click)="editUser(row.userId)" 
+              title="Modificar datos de usuario y rol">
+              👤
+            </button>
+
+            <!-- Botón de eliminar perfil (oculto para User ID 1) -->
+            <button 
+              *ngIf="row.userId !== 1"
+              class="btn-delete" 
+              (click)="deleteEmployee(row.employeeId!)" 
+              title="Eliminar perfil de empleado">
+              ❌
+            </button>
+
+            <!-- Etiqueta informativa cuando es el User ID 1 -->
+            <span *ngIf="row.userId === 1" class="protected-badge" title="Usuario principal protegido">
+              🔒 Administrador Principal
+            </span>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
