@@ -1,23 +1,52 @@
-<form (submit)="saveUser()">
-  <!-- Campos existentes -->
-  <div><label>Nombre:</label> <input type="text" [(ngModel)]="newUser.name" name="name" required></div>
-  <div><label>Apellido:</label> <input type="text" [(ngModel)]="newUser.surname" name="surname" required></div>
-  <div><label>DNI:</label> <input type="text" [(ngModel)]="newUser.dni" name="dni" required></div>
-  <div><label>Email:</label> <input type="email" [(ngModel)]="newUser.email" name="email" required></div>
+<!-- src/app/components/usuario-form/usuario-form.html -->
+<h2>{{ isEditMode ? 'Editar Usuario' : 'Nuevo Usuario' }}</h2>
 
-  <!-- Nuevos campos requeridos por el backend -->
-  <div><label>Username:</label> <input type="text" [(ngModel)]="newUser.username" name="username" required></div>
-  <div><label>Password:</label> <input type="password" [(ngModel)]="newUser.password" name="password" required></div>
-  <div><label>Teléfono:</label> <input type="text" [(ngModel)]="newUser.phoneNumber" name="phoneNumber" required></div>
-  <div><label>Fecha Nacimiento:</label> <input type="date" [(ngModel)]="newUser.birthDay" name="birthDay"></div>
+<form (submit)="saveUser()">
   <div>
+    <label>Nombre:</label>
+    <input type="text" [(ngModel)]="newUser.name" name="name" required>
+  </div>
+  <div>
+    <label>Apellido:</label>
+    <input type="text" [(ngModel)]="newUser.surname" name="surname" required>
+  </div>
+  <div>
+    <label>DNI:</label>
+    <input type="text" [(ngModel)]="newUser.dni" name="dni" required>
+  </div>
+  <div>
+    <label>Email:</label>
+    <input type="email" [(ngModel)]="newUser.email" name="email" required>
+  </div>
+  <div>
+    <label>Username:</label>
+    <input type="text" [(ngModel)]="newUser.username" name="username" required>
+  </div>
+  
+  <!-- La contraseña solo se solicita al crear un nuevo usuario -->
+  <div *ngIf="!isEditMode">
+    <label>Password:</label> 
+    <input type="password" [(ngModel)]="newUser.password" name="password" required>
+  </div>
+
+  <div>
+    <label>Teléfono:</label>
+    <input type="text" [(ngModel)]="newUser.phoneNumber" name="phoneNumber" required>
+  </div>
+  <div>
+    <label>Fecha Nacimiento:</label>
+    <input type="date" [(ngModel)]="newUser.birthDay" name="birthDay">
+  </div>
+  
+  <!-- Selección de roles dinámicos filtrados desde el componente -->
+  <div *ngIf="!isEditMode">
     <label>Rol:</label>
-    <select [(ngModel)]="newUser.role" name="role">
-      <option value="ADMIN">Administrador</option>
-      <option value="RECEPCIONIST">Recepcionista</option>
-      <option value="GUEST">Huésped</option>
+    <select [(ngModel)]="newUser.role" name="role" required>
+      <option *ngFor="let role of availableRoles" [value]="role.value">
+        {{ role.label }}
+      </option>
     </select>
   </div>
 
-  <button type="submit">Guardar Usuario</button>
+  <button type="submit">{{ isEditMode ? 'Actualizar Cambios' : 'Guardar Usuario' }}</button>
 </form>

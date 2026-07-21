@@ -1,10 +1,12 @@
 <div class="container">
-  <h1>Lista de Usuarios</h1>
+  <h1>Usuarios</h1>
 
   <!-- Filtro y botón de creación -->
   <div class="actions-bar">
     <input type="text" placeholder="Filtrar por nombre o DNI..." (input)="onFilter($event)">
-    <button routerLink="/usuarios/crear">Nuevo Usuario</button>
+    
+    <!-- Se muestra solo si tiene permisos -->
+    <button *ngIf="canCreateUser()" routerLink="/usuarios/crear">Nuevo Usuario</button>
   </div>
 
   <table class="user-table">
@@ -19,7 +21,6 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Usamos 'filteredUsers' en lugar de 'usersList' -->
       <tr *ngFor="let user of filteredUsers">
         <td>{{ user.name }}</td>
         <td>{{ user.surname }}</td>
@@ -27,8 +28,9 @@
         <td>{{ user.email }}</td>
         <td>{{ user.roles[0]?.name }}</td>
         <td>
-          <button (click)="editUser(user.id)">✏️</button> <!-- Lápiz -->
-          <button (click)="deleteUser(user.id)">❌</button> <!-- X -->
+          <button (click)="editUser(user.id)">✏️</button>
+          <button (click)="changePassword(user.id)" title="Cambiar contraseña">🔑</button>
+          <button (click)="deleteUser(user.id)">❌</button>
         </td>
       </tr>
     </tbody>

@@ -1,7 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user'; 
-import { RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { RouterLink, Router } from '@angular/router'; // <--- Importamos Router
+import { ErrorDTOResponse } from '../../models/error-response.model';
+import { UserDtoResponse } from '../../models/user-response.model';
 
 @Component({
   selector: 'app-usuarios',
@@ -12,23 +15,30 @@ import { RouterLink } from '@angular/router';
 })
 export class UsuariosComponent implements OnInit {
   usersList: any[] = [];
-  filteredUsers: any[] = []; // <--- Agregamos esto
+  filteredUsers: any[] = [];
   errorMessage: string = '';
 
   constructor(
     private userService: UserService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService,
+    private router: Router // <--- Inyectamos Router aquí
   ) {}
 
   ngOnInit(): void {
     this.loadUsers();
   }
 
+  // Verifica si el usuario logueado puede crear nuevos usuarios
+  canCreateUser(): boolean {
+    return this.authService.canCreateUser();
+  }
+
   loadUsers(): void {
     this.userService.getAll().subscribe({
       next: (data) => {
         this.usersList = data;
-        this.filteredUsers = data; // <--- Inicializamos con todos los usuarios
+        this.filteredUsers = data;
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -37,7 +47,6 @@ export class UsuariosComponent implements OnInit {
     });
   }
 
-  // <--- Nuevo método para filtrar
   onFilter(event: any): void {
     const searchTerm = event.target.value.toLowerCase();
     this.filteredUsers = this.usersList.filter(user => 
@@ -46,26 +55,68 @@ export class UsuariosComponent implements OnInit {
     );
   }
 
-  // <--- Métodos de acción (luego los conectaremos)
+  // <--- Redirigimos a la ruta de edición con el ID correspondiente
   editUser(id: number): void {
-    console.log('Editar usuario:', id);
+    this.router.navigate(['/usuarios/editar', id]);
   }
 
   deleteUser(id: number): void {
     if (confirm('¿Estás seguro de que quieres eliminar a este usuario?')) {
       this.userService.deleteUser(id).subscribe({
         next: () => {
-          // Eliminamos el usuario de nuestras listas locales
           this.usersList = this.usersList.filter(u => u.id !== id);
           this.filteredUsers = this.filteredUsers.filter(u => u.id !== id);
           this.cdr.detectChanges();
-          alert('Usuario eliminado correctamente');
+          alert('Usuario eliminado correctamente.');
         },
         error: (err) => {
-          alert('Error al intentar eliminar el usuario');
-          console.error(err);
+          console.error('Error al eliminar usuario:', err);
+          
+          // Mapeamos el cuerpo del error con la interfaz ErrorDTOResponse
+          const apiError = err.error as ErrorDTOResponse;
+          const userMessage = apiError?.mensaje || 'No se pudo eliminar el usuario.';
+          
+          alert(userMessage);
         }
       });
     }
   }
+
+  changePassword(id: number): void {
+  const newPassword = prompt('Ingresa la nueva contraseña para el usuario (mínimo 6 caracteres):');
+
+  if (!newPassword) {
+    // Si cancela o deja vacío
+    return;
+  }
+
+  if (newPassword.trim().length < 6) {
+    alert('La contraseña debe tener al menos 6 caracteres.');
+    return;
+  }
+
+  this.userService.resetPassword(id, newPassword.trim()).subscribe({
+    next: () => {
+      alert('Contraseña actualizada con éxito.');
+    },
+    error: (err) => {
+      console.error('Error al cambiar contraseña:', err);
+      const apiError = err.error;
+      const userMessage = apiError?.mensaje || 'No se pudo actualizar la contraseña.';
+      alert(userMessage);
+    }
+  });
+}
+
+canChangePasswordFor(user: UserDtoResponse): boolean {
+  // Si el usuario es Recepcionista y el usuario objetivo es ADMIN, retorne false
+  const isTargetAdmin = user.roles?.some(role => role.name === 'ROLE_ADMIN' || role.name === 'ADMIN');
+  
+  if (this.authService.isRecepcionist() && isTargetAdmin) {
+    return false;
+  }
+  
+  return true;
+}
+
 }
