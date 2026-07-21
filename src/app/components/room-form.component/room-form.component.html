@@ -1,0 +1,62 @@
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header">
+      <h3>{{ isEditMode ? '✏️ Editar Habitación' : '➕ Nueva Habitación' }}</h3>
+      <p class="subtitle">
+        {{ isEditMode ? 'Modifique los datos de la unidad seleccionada' : 'Registre una nueva habitación física en el sistema' }}
+      </p>
+    </div>
+
+    <div class="card-body">
+      <!-- Alertas -->
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
+
+      <form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
+        <!-- Número de Habitación -->
+        <div class="form-group mb-3">
+          <label for="number" class="form-label">Número de Habitación *</label>
+          <input 
+            type="number" 
+            id="number" 
+            class="form-control" 
+            formControlName="number"
+            placeholder="Ej: 101, 102, 201..." 
+            [class.is-invalid]="roomForm.get('number')?.touched && roomForm.get('number')?.invalid">
+          <div *ngIf="roomForm.get('number')?.touched && roomForm.get('number')?.invalid" class="invalid-feedback">
+            Ingrese un número válido mayor a 0.
+          </div>
+        </div>
+
+        <!-- Tipo de Habitación (Select) -->
+        <div class="form-group mb-4">
+          <label for="roomTypeId" class="form-label">Categoría / Tipo de Habitación *</label>
+          <select 
+            id="roomTypeId" 
+            class="form-control" 
+            formControlName="roomTypeId"
+            [class.is-invalid]="roomForm.get('roomTypeId')?.touched && roomForm.get('roomTypeId')?.invalid">
+            <option value="" disabled>-- Seleccione un tipo --</option>
+            <option *ngFor="let type of roomTypes" [value]="type.id">
+              {{ type.name }} (Capacidad: {{ type.capacity }} pers. - ${{ type.pricePerNight }}/noche)
+            </option>
+          </select>
+          <div *ngIf="roomForm.get('roomTypeId')?.touched && roomForm.get('roomTypeId')?.invalid" class="invalid-feedback">
+            Debe seleccionar un tipo de habitación.
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="button-group">
+          <button type="button" class="btn btn-secondary" routerLink="/habitaciones">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="roomForm.invalid || isLoading">
+            {{ isLoading ? 'Guardando...' : (isEditMode ? 'Guardar Cambios' : 'Crear Habitación') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,104 @@
+<div class="container mt-4">
+  <div class="header-section">
+    <div>
+      <h2>🏨 Gestión de Habitaciones</h2>
+      <p class="subtitle">Administración de unidades físicas y su disponibilidad actual</p>
+    </div>
+
+    <div class="action-buttons" *ngIf="isAdmin">
+      <button class="btn btn-secondary" routerLink="/habitaciones/tipos">
+        🏷️ Gestionar Tipos
+      </button>
+      <button class="btn btn-primary" routerLink="/habitaciones/nueva">
+        ➕ Nueva Habitación
+      </button>
+    </div>
+  </div>
+
+  <!-- Alertas -->
+  <div *ngIf="successMessage" class="alert alert-success mt-3">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Cargando -->
+  <div *ngIf="isLoading" class="text-center my-5">
+    <p>Cargando habitaciones...</p>
+  </div>
+
+  <!-- Tabla de Habitaciones -->
+  <div *ngIf="!isLoading && rooms.length > 0" class="table-container mt-3">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Número</th>
+          <th>Tipo / Categoría</th>
+          <th>Capacidad</th>
+          <th>Precio x Noche</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- ⚠️ El *ngFor debe envolver toda la etiqueta <tr> -->
+        <tr *ngFor="let room of rooms">
+          <td class="fw-bold">N° {{ room.number }}</td>
+          <td>{{ room.roomTypeName }}</td>
+          <td>👥 {{ room.capacity }} pers.</td>
+          <td>{{ room.pricePerNight | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'badge-available': room.state === RoomState.AVAILABLE,
+              'badge-occupied': room.state === RoomState.OCCUPIED,
+              'badge-maintenance': room.state === RoomState.MAINTENANCE,
+              'badge-cleaning': room.state === RoomState.CLEANING
+            }">
+              {{ room.state }}
+            </span>
+          </td>
+          <td class="actions-cell">
+            <!-- Alternar Mantenimiento / Reactivar -->
+            <button 
+              class="btn-icon"
+              [ngClass]="room.state === RoomState.MAINTENANCE ? 'btn-success' : 'btn-warning'"
+              (click)="toggleMaintenance(room)" 
+              [title]="room.state === RoomState.MAINTENANCE ? 'Reactivar / Quitar Mantenimiento' : 'Poner en Mantenimiento'">
+              {{ room.state === RoomState.MAINTENANCE ? '✅' : '🛠️' }}
+            </button>
+
+            <!-- Editar (Solo Admin) -->
+            <button 
+              *ngIf="isAdmin" 
+              class="btn-icon btn-edit" 
+              [routerLink]="['/habitaciones/editar', room.id]" 
+              title="Editar Habitación">
+              ✏️
+            </button>
+
+            <!-- Eliminar (Solo Admin) -->
+            <button 
+              *ngIf="isAdmin" 
+              class="btn-icon btn-danger" 
+              [disabled]="room.state === RoomState.OCCUPIED"
+              (click)="deleteRoom(room)" 
+              [title]="room.state === RoomState.OCCUPIED ? 'No se puede eliminar una habitación ocupada' : 'Eliminar Habitación'">
+              🗑️
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Estado vacío -->
+  <div *ngIf="!isLoading && rooms.length === 0" class="empty-state mt-4">
+    <p>No hay habitaciones registradas actualmente.</p>
+  </div>
+
+  <button class="btn btn-secondary mt-3" routerLink="/welcome">
+    ⬅ Volver al Menú Principal
+  </button>
+</div>

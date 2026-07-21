@@ -69,4 +69,10 @@ export class AuthService {
   canCreateUser(): boolean {
     return this.isAdmin() || this.isRecepcionist();
   }
+
+hasRole(requiredRole: string): boolean {
+    const role = this.getUserRole();
+    return role === requiredRole || role === `ROLE_${requiredRole}`;
+  }
+
 }
