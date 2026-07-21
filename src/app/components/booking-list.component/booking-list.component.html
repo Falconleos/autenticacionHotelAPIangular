@@ -1,0 +1,176 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Gestión de Reservas</h2>
+    <button class="btn btn-primary" (click)="openAvailabilityModal()">
+      + Nueva Reserva / Disponibilidad
+    </button>
+  </div>
+
+  <!-- Mensaje de error general -->
+  <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Sección de Filtros Locales -->
+  <div class="card p-3 mb-4 shadow-sm">
+    <h5 class="card-title mb-3">Filtros de Búsqueda</h5>
+    <div class="row g-3">
+      <!-- Filtro Habitación -->
+      <div class="col-md-2">
+        <label for="filterRoom" class="form-label">Habitación</label>
+        <input 
+          type="text" 
+          id="filterRoom" 
+          class="form-control" 
+          placeholder="Nº Hab." 
+          [(ngModel)]="filterRoomNumber" 
+          (input)="applyFilters()">
+      </div>
+
+      <!-- Filtro Empleado -->
+      <div class="col-md-3">
+        <label for="filterEmployee" class="form-label">Empleado</label>
+        <input 
+          type="text" 
+          id="filterEmployee" 
+          class="form-control" 
+          placeholder="Nombre empleado" 
+          [(ngModel)]="filterEmployeeName" 
+          (input)="applyFilters()">
+      </div>
+
+      <!-- Filtro Check-In -->
+      <div class="col-md-2">
+        <label for="filterCheckIn" class="form-label">Check-In desde</label>
+        <input 
+          type="date" 
+          id="filterCheckIn" 
+          class="form-control" 
+          [(ngModel)]="filterCheckInDate" 
+          (change)="applyFilters()">
+      </div>
+
+      <!-- Filtro Check-Out -->
+      <div class="col-md-2">
+        <label for="filterCheckOut" class="form-label">Check-Out hasta</label>
+        <input 
+          type="date" 
+          id="filterCheckOut" 
+          class="form-control" 
+          [(ngModel)]="filterCheckOutDate" 
+          (change)="applyFilters()">
+      </div>
+
+      <!-- Filtro Estado Activo -->
+      <div class="col-md-2">
+        <label for="filterActive" class="form-label">Estado</label>
+        <select 
+          id="filterActive" 
+          class="form-select" 
+          [(ngModel)]="filterActive" 
+          (change)="loadBookings()">
+          <option value="ALL">Todas</option>
+          <option [value]="true">Activas</option>
+          <option [value]="false">Inactivas</option>
+        </select>
+      </div>
+
+      <!-- Botón limpiar filtros -->
+      <div class="col-md-1 d-flex align-items-end">
+        <button class="btn btn-outline-secondary w-100" (click)="resetFilters()" title="Limpiar filtros">
+          🔄
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spinner de carga -->
+  <div *ngIf="isLoading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <!-- Tabla de Reservas -->
+  <div *ngIf="!isLoading" class="table-responsive shadow-sm rounded">
+    <table class="table table-striped table-hover align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>#ID</th>
+          <th>Pasajero</th>
+          <th>Habitación</th>
+          <th>Check-In</th>
+          <th>Check-Out</th>
+          <th>Empleado</th>
+          <th>Total</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let booking of filteredBookings">
+          <td>{{ booking.id }}</td>
+          
+          <!-- Pasajero / Huésped -->
+          <td>
+            {{ booking.guestFirstName }} {{ booking.guestLastName }}
+            <small *ngIf="booking.guestPhone" class="d-block text-muted">{{ booking.guestPhone }}</small>
+          </td>
+
+          <!-- Habitación -->
+          <td>
+            {{ booking.room?.roomNumber || booking.roomNumber || 'N/A' }}
+          </td>
+
+          <!-- Fechas de Ingreso y Egreso -->
+          <td>{{ (booking.checkIn || booking.checkInDate) | date:'dd/MM/yyyy' }}</td>
+          <td>{{ (booking.checkOut || booking.checkOutDate) | date:'dd/MM/yyyy' }}</td>
+
+          <!-- Empleado responsable -->
+          <td>
+            <ng-container *ngIf="booking.employee; else fallbackEmp">
+              {{ booking.employee.firstName }} {{ booking.employee.lastName }}
+            </ng-container>
+            <ng-template #fallbackEmp>
+              {{ booking.employeeName || 'N/A' }}
+            </ng-template>
+          </td>
+
+          <!-- Total -->
+          <td>{{ booking.totalPrice | currency:'USD':'symbol':'1.2-2' }}</td>
+
+          <!-- Estado -->
+          <td>
+            <span class="badge" [ngClass]="getStatusBadgeClass(booking.state!)">
+              {{ booking.state }}
+            </span>
+          </td>
+
+          <!-- Acciones -->
+          <td>
+            <button 
+              *ngIf="booking.state === 'PENDING'" 
+              class="btn btn-sm btn-success" 
+              (click)="confirmBooking(booking.id!)">
+              Confirmar
+            </button>
+          </td>
+        </tr>
+
+        <!-- Mensaje si no hay resultados -->
+        <tr *ngIf="filteredBookings.length === 0">
+          <td colspan="9" class="text-center py-4 text-muted">
+            No se encontraron reservas registradas con los filtros actuales.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- COMPONENTE MODAL DE DISPONIBILIDAD Y ALTA -->
+<app-booking-availability-modal 
+  *ngIf="showAvailabilityModal" 
+  (closeModal)="showAvailabilityModal = false"
+  (bookingCreated)="loadBookings()">
+</app-booking-availability-modal>
