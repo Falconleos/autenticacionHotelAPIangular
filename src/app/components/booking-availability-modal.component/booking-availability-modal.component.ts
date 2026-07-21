@@ -29,7 +29,8 @@ export class BookingAvailabilityModalComponent {
   availableRooms: RoomDTOResponse[] = [];
   selectedRoom: RoomDTOResponse | null = null;
 
-  // Estados de carga y mensajes
+  // Estados de carga, banderas y mensajes
+  hasSearched: boolean = false;
   isSearching: boolean = false;
   isSaving: boolean = false;
   errorMessage: string = '';
@@ -64,6 +65,8 @@ export class BookingAvailabilityModalComponent {
 
     this.errorMessage = '';
     this.isSearching = true;
+    this.hasSearched = false;
+
     console.log('Enviando búsqueda con:', { 
       checkIn: this.searchCheckIn, 
       checkOut: this.searchCheckOut, 
@@ -75,11 +78,13 @@ export class BookingAvailabilityModalComponent {
         console.log('Habitaciones recibidas con éxito:', rooms);
         this.availableRooms = rooms;
         this.isSearching = false;
+        this.hasSearched = true;
       },
       error: (err) => {
         console.error('Error detallado al buscar disponibilidad:', err);
         this.errorMessage = 'Ocurrió un error al consultar las habitaciones disponibles. Código: ' + (err.status || 'Desconocido');
         this.isSearching = false;
+        this.hasSearched = true;
       }
     });
   }
