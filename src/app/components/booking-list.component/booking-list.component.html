@@ -27,8 +27,20 @@
           (input)="applyFilters()">
       </div>
 
-      <!-- Filtro Empleado -->
+      <!-- Filtro Pasajero (Nuevo) -->
       <div class="col-md-3">
+        <label for="filterGuest" class="form-label">Pasajero</label>
+        <input 
+          type="text" 
+          id="filterGuest" 
+          class="form-control" 
+          placeholder="Nombre, apellido o tel." 
+          [(ngModel)]="filterGuest" 
+          (input)="applyFilters()">
+      </div>
+
+      <!-- Filtro Empleado -->
+      <div class="col-md-2">
         <label for="filterEmployee" class="form-label">Empleado</label>
         <input 
           type="text" 
@@ -103,63 +115,77 @@
           <th>Check-Out</th>
           <th>Empleado</th>
           <th>Total</th>
+          <th>Observaciones</th>
           <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let booking of filteredBookings">
+          <!-- 1. ID -->
           <td>{{ booking.id }}</td>
           
-          <!-- Pasajero / Huésped -->
+          <!-- 2. Pasajero / Huésped -->
           <td>
             {{ booking.guestFirstName }} {{ booking.guestLastName }}
             <small *ngIf="booking.guestPhone" class="d-block text-muted">{{ booking.guestPhone }}</small>
           </td>
 
-          <!-- Habitación -->
-          <td>
-            {{ booking.room?.roomNumber || booking.roomNumber || 'N/A' }}
-          </td>
+          <!-- 3. Habitación -->
+          <td>{{ booking.room?.roomNumber || booking.roomNumber || 'N/A' }}</td>
 
-          <!-- Fechas de Ingreso y Egreso -->
+          <!-- 4. Check-In -->
           <td>{{ (booking.checkIn || booking.checkInDate) | date:'dd/MM/yyyy' }}</td>
+
+          <!-- 5. Check-Out -->
           <td>{{ (booking.checkOut || booking.checkOutDate) | date:'dd/MM/yyyy' }}</td>
 
-          <!-- Empleado responsable -->
+          <!-- 6. Empleado responsable -->
           <td>
-            <ng-container *ngIf="booking.employee; else fallbackEmp">
-              {{ booking.employee.firstName }} {{ booking.employee.lastName }}
+            <ng-container *ngIf="booking.employee?.user; else fallbackEmp">
+              {{ booking.employee?.user?.name }} {{ booking.employee?.user?.surname }}
             </ng-container>
             <ng-template #fallbackEmp>
               {{ booking.employeeName || 'N/A' }}
             </ng-template>
           </td>
 
-          <!-- Total -->
+          <!-- 7. Total -->
           <td>{{ booking.totalPrice | currency:'USD':'symbol':'1.2-2' }}</td>
 
-          <!-- Estado -->
+          <!-- 8. Observaciones -->
+          <td>{{ booking.observation || '-' }}</td>
+
+          <!-- 9. Estado -->
           <td>
             <span class="badge" [ngClass]="getStatusBadgeClass(booking.state!)">
               {{ booking.state }}
             </span>
           </td>
 
-          <!-- Acciones -->
+          <!-- 10. Acciones -->
           <td>
-            <button 
-              *ngIf="booking.state === 'PENDING'" 
-              class="btn btn-sm btn-success" 
-              (click)="confirmBooking(booking.id!)">
-              Confirmar
-            </button>
+            <div class="d-flex gap-1">
+              <button 
+                *ngIf="booking.state === 'PENDING'" 
+                class="btn btn-sm btn-success" 
+                (click)="confirmBooking(booking.id!)">
+                Confirmar
+              </button>
+              
+              <button 
+                *ngIf="booking.state !== 'CANCELLED'" 
+                class="btn btn-sm btn-danger" 
+                (click)="openCancelModal(booking.id!)">
+                Cancelar
+              </button>
+            </div>
           </td>
         </tr>
 
         <!-- Mensaje si no hay resultados -->
         <tr *ngIf="filteredBookings.length === 0">
-          <td colspan="9" class="text-center py-4 text-muted">
+          <td colspan="10" class="text-center py-4 text-muted">
             No se encontraron reservas registradas con los filtros actuales.
           </td>
         </tr>
@@ -174,3 +200,42 @@
   (closeModal)="showAvailabilityModal = false"
   (bookingCreated)="loadBookings()">
 </app-booking-availability-modal>
+
+<!-- MODAL PARA MOTIVO DE CANCELACIÓN -->
+<div *ngIf="showCancelModal">
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal d-block fade show" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title fw-bold">
+            Cancelar Reserva #{{ bookingToCancelId }}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" (click)="showCancelModal = false"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted small">Por favor, indique el motivo de la cancelación (máximo 250 caracteres):</p>
+          <div class="mb-3">
+            <textarea 
+              class="form-control" 
+              rows="3" 
+              maxlength="250"
+              [(ngModel)]="cancelReason" 
+              placeholder="Ej: Problemas de salud o de viaje...">
+            </textarea>
+            <div class="text-end text-muted small mt-1">{{ cancelReason.length }}/250</div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" (click)="showCancelModal = false" [disabled]="isCancelling">
+            Volver
+          </button>
+          <button type="button" class="btn btn-danger" (click)="submitCancellation()" [disabled]="isCancelling">
+            <span *ngIf="isCancelling" class="spinner-border spinner-border-sm me-1"></span>
+            Confirmar Cancelación
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

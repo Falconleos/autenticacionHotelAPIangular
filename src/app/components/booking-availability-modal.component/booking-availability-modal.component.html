@@ -82,11 +82,11 @@
             <p class="text-muted small mt-2">Buscando habitaciones disponibles...</p>
           </div>
 
-          <!-- Listado/Grilla de Habitaciones Disponibles (Solo se muestra cuando finaliza la búsqueda) -->
+          <!-- Listado/Grilla de Habitaciones Disponibles -->
           <div *ngIf="hasSearched && !isSearching">
             
             <h6 class="fw-bold mb-3" *ngIf="availableRooms.length > 0">
-              Habitaciones Disponibles ({{ availableRooms.length }})
+              Habitaciones Disponibles ({{ availableRooms.length }}) - Estadía: <span class="text-primary">{{ calculateNights() }} noche(s)</span>
             </h6>
 
             <div class="row g-3" *ngIf="availableRooms.length > 0">
@@ -104,6 +104,10 @@
                       <ul class="list-unstyled small text-muted mb-3">
                         <li><i class="bi bi-people me-1"></i> Capacidad: <strong>{{ room.capacity }} personas</strong></li>
                         <li><i class="bi bi-cash-stack me-1"></i> Precio/Noche: <strong>${{ room.pricePerNight | number:'1.2-2' }}</strong></li>
+                        <hr class="my-2">
+                        <li class="text-success fw-bold fs-6">
+                          <i class="bi bi-tag-fill me-1"></i> Total Estancia: ${{ ((room.pricePerNight ?? 0) * (calculateNights() ?? 0)) | number:'1.2-2' }}
+                        </li>
                       </ul>
                     </div>
 
@@ -115,7 +119,7 @@
               </div>
             </div>
 
-            <!-- Estado Vacío (Si buscó pero no hay habitaciones) -->
+            <!-- Estado Vacío -->
             <div *ngIf="availableRooms.length === 0" class="text-center py-4 text-muted">
               <p class="mb-0">No se encontraron habitaciones disponibles para el rango de fechas y huéspedes seleccionados.</p>
             </div>
@@ -130,8 +134,11 @@
           <!-- Resumen de la Habitación Seleccionada -->
           <div class="alert alert-info d-flex justify-content-between align-items-center mb-4">
             <div>
-              <strong class="d-block">Habitación #{{ selectedRoom?.roomNumber }} ({{ selectedRoom?.roomType }})</strong>
-              <small>Fechas: <strong>{{ bookingRequest.checkInDate }}</strong> al <strong>{{ bookingRequest.checkOutDate }}</strong> ({{ bookingRequest.guestCount }} huéspedes)</small>
+              <strong class="d-block fs-5">Habitación #{{ selectedRoom?.roomNumber }} ({{ selectedRoom?.roomType }})</strong>
+              <small class="text-muted">Fechas: <strong>{{ bookingRequest.checkIn }}</strong> al <strong>{{ bookingRequest.checkOut }}</strong> ({{ calculateNights() }} noche(s) - {{ bookingRequest.guestCount }} huésped/es)</small>
+              <div class="text-success fw-bold mt-2 fs-6">
+                <i class="bi bi-cash me-1"></i> Total a Pagar: ${{ (((selectedRoom?.pricePerNight ?? 0)) * (calculateNights() ?? 0)) | number:'1.2-2' }}
+              </div>
             </div>
             <button type="button" class="btn btn-sm btn-outline-dark" (click)="goBackToStep1()">
               Cambiar Habitación
@@ -147,8 +154,8 @@
                 <input 
                   type="text" 
                   class="form-control" 
-                  [(ngModel)]="bookingRequest.guestName" 
-                  name="guestName" 
+                  [(ngModel)]="bookingRequest.guestFirstName" 
+                  name="guestFirstName" 
                   required>
               </div>
 
@@ -163,16 +170,6 @@
               </div>
 
               <div class="col-md-6">
-                <label class="form-label small fw-bold">Email *</label>
-                <input 
-                  type="email" 
-                  class="form-control" 
-                  [(ngModel)]="bookingRequest.guestEmail" 
-                  name="guestEmail" 
-                  required>
-              </div>
-
-              <div class="col-md-6">
                 <label class="form-label small fw-bold">Teléfono *</label>
                 <input 
                   type="text" 
@@ -183,21 +180,12 @@
               </div>
 
               <div class="col-md-6">
-                <label class="form-label small fw-bold">DNI / Pasaporte *</label>
+                <label class="form-label small fw-bold">Observaciones (Opcional)</label>
                 <input 
                   type="text" 
                   class="form-control" 
-                  [(ngModel)]="bookingRequest.guestPassport" 
-                  name="guestPassport" 
-                  required>
-              </div>
-
-              <div class="col-md-6">
-                <label class="form-label small fw-bold">Tipo de Cliente *</label>
-                <select class="form-select" [(ngModel)]="bookingRequest.customerType" name="customerType" required>
-                  <option value="INDIVIDUAL">Particular</option>
-                  <option value="CORPORATE">Corporativo</option>
-                </select>
+                  [(ngModel)]="bookingRequest.observation" 
+                  name="observation">
               </div>
 
             </div>

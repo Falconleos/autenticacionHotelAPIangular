@@ -1,16 +1,40 @@
-export enum BookingStatus {
-  PENDING = 'PENDING',
-  CONFIRMED = 'CONFIRMED',
-  CANCELLED = 'CANCELLED',
-  NO_SHOW = 'NO_SHOW',
-  CHECKED_IN = 'CHECKED_IN',
-  INTERRUPTED = 'INTERRUPTED',
-  CONCLUDED = 'CONCLUDED'
+export interface BookingDTORequest {
+  roomId: number;
+  employeeId: number;
+  checkIn: string;
+  checkOut: string;
+  checkInDate?: string;
+  checkOutDate?: string;
+  guestCount?: number;
+  guestFirstName?: string;
+  guestLastName?: string;
+  guestName?: string;
+  guestEmail?: string;
+  guestPassport?: string;
+  guestPhone?: string;
+  customerType?: string;
+  observation?: string;
 }
 
-export enum CustomerType {
-  INDIVIDUAL = 'INDIVIDUAL',
-  CORPORATE = 'CORPORATE'
+export interface BookingDTOResponse {
+  id?: number;
+  checkIn?: string;
+  checkOut?: string;
+  checkInDate?: string;  // <--- Agregado por compatibilidad
+  checkOutDate?: string; // <--- Agregado por compatibilidad
+  guestCount?: number;
+  totalPrice?: number;
+  state?: BookingStatus | string;
+  guestFirstName?: string;
+  guestLastName?: string;
+  guestPhone?: string;
+  observation?: string;  // <--- Agregado para las observaciones
+  room?: RoomDTOResponse;
+  employee?: EmployeeDTOResponse;
+  roomNumber?: string | number;
+  employeeName?: string;
+  active?: boolean;
+  createdAt?: string;
 }
 
 export interface RoomDTOResponse {
@@ -25,56 +49,31 @@ export interface RoomDTOResponse {
 
 export interface EmployeeDTOResponse {
   id?: number;
-  firstName?: string;
-  lastName?: string;
+  shift?: string;
+  salary?: number;
+  user?: {
+    id?: number;
+    name?: string;
+    surname?: string;
+    email?: string;
+    dni?: string;
+    [key: string]: any;
+  };
   [key: string]: any;
 }
 
-export interface BookingDTOResponse {
-  id?: number;
-  checkIn?: string;
-  checkOut?: string;
-  checkInDate?: string;
-  checkOutDate?: string;
-  guestCount?: number;
-  state?: BookingStatus;
-  guestFirstName?: string;
-  guestLastName?: string;
-  guestPhone?: string;
-  observation?: string;
-  employee?: EmployeeDTOResponse;
-  employeeId?: number;
-  employeeName?: string;
-  room?: RoomDTOResponse;
-  roomNumber?: string | number;
-  totalPrice?: number;
-  active?: boolean;
-  createdAt?: string;
-}
-
-export interface BookingDTORequest {
-  roomId: number;
-  guestName?: string;
-  guestLastName?: string;
-  guestEmail?: string;
-  guestPhone?: string;
-  guestPassport?: string;
-  customerType?: CustomerType;
-  checkIn?: string;
-  checkOut?: string;
-  checkInDate?: string;
-  checkOutDate?: string;
-  guestCount: number;
-  observation?: string;
+export enum BookingStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  CANCELLED = 'CANCELLED',
+  NO_SHOW = 'NO_SHOW'
 }
 
 export interface BookingCancellationDTORequest {
-  bookingId: number;
   reason?: string;
 }
 
 export interface BookingCancellationDTOResponse {
-  id?: number;
   success?: boolean;
   message?: string;
 }
