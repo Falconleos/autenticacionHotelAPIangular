@@ -26,6 +26,11 @@ export class CheckInService {
     return this.http.put<CheckInDTOResponse>(`${this.apiUrl}/${id}/interrupt`, {}, { params, withCredentials: true });
   }
 
+  /** Registrar el pago/saldado de una estadía */
+  payStay(id: number): Observable<CheckInDTOResponse> {
+    return this.http.put<CheckInDTOResponse>(`${this.apiUrl}/${id}/pay`, {}, { withCredentials: true });
+  }
+
   /** Listar todos los check-ins (opcionalmente filtrados por activo) */
   list(active?: boolean): Observable<CheckInDTOResponse[]> {
     let params = new HttpParams();
@@ -33,10 +38,5 @@ export class CheckInService {
       params = params.set('active', active);
     }
     return this.http.get<CheckInDTOResponse[]>(this.apiUrl, { params, withCredentials: true });
-  }
-
-  /** Registrar el pago/saldado de una estadía */
-  payStay(id: number): Observable<CheckInDTOResponse> {
-    return this.http.put<CheckInDTOResponse>(`${this.apiUrl}/${id}/pay`, {}, { withCredentials: true });
   }
 }

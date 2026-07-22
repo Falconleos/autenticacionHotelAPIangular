@@ -96,6 +96,11 @@
                 (click)="payCheckIn(checkIn.id)">
                 Pagar
               </button>
+              <button 
+                class="btn btn-sm btn-danger" 
+                (click)="interruptCheckIn(checkIn.id)">
+                Interrumpir
+              </button>
             </td>
           </tr>
           <tr *ngIf="activeCheckIns.length === 0">

@@ -83,4 +83,22 @@ export class CheckInListComponent implements OnInit {
     }
   }
 
+  interruptCheckIn(id: number): void {
+    const reason = prompt('Por favor, ingrese el motivo de la interrupción del check-in:');
+    if (reason !== null && reason.trim() !== '') {
+      this.checkInService.interruptStay(id, reason).subscribe({
+        next: () => {
+          alert('Estadía interrumpida exitosamente.');
+          this.loadActiveCheckIns(); // Recargamos la lista
+        },
+        error: (err: any) => {
+          console.error('Error al interrumpir la estadía:', err);
+          alert('No se pudo interrumpir la estadía.');
+        }
+      });
+    } else if (reason !== null) {
+      alert('Debe ingresar un motivo obligatorio.');
+    }
+  }
+
 }
