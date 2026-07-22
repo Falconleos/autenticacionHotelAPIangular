@@ -7,6 +7,8 @@ import { RoomListComponent } from './components/room-list.component/room-list.co
 import { RoomFormComponent } from './components/room-form.component/room-form.component';
 import { RoomTypeListComponent } from './components/room-type-list.component/room-type-list.component';
 import { BookingListComponent } from './components/booking-list.component/booking-list.component'; // <-- Importar
+import { CheckInListComponent } from './components/check-in-list.component/check-in-list.component';
+import { CheckInModalComponent } from './components/check-in-modal.component/check-in-modal.component';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -25,6 +27,18 @@ export const routes: Routes = [
   { 
     path: 'empleados/asignar/:userId', 
     loadComponent: () => import('./components/employee-form/employee-form').then(m => m.EmployeeForm) 
+  },
+  { 
+    path: 'check-ins', 
+    component: CheckInListComponent 
+  },
+  { 
+  path: 'check-ins/new', 
+  component: CheckInModalComponent // (o el nombre que le demos al componente en el próximo paso)
+  },
+  { 
+  path: 'check-ins/new', 
+  component: CheckInModalComponent 
   },
 
   { path: 'habitaciones', component: RoomListComponent },

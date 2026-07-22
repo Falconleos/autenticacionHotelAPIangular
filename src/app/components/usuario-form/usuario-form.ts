@@ -111,7 +111,8 @@ export class UsuarioForm implements OnInit {
       this.userService.createUser(this.newUser).subscribe({
         next: () => {
           alert('Usuario guardado exitosamente');
-          this.router.navigate(['/usuarios']);
+          // Volvemos a la pantalla anterior en lugar de ir siempre a /usuarios
+          window.history.back();
         },
         error: (error) => {
           console.error('Error al guardar:', error);

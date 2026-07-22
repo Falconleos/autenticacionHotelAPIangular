@@ -1,0 +1,112 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Registrar Check-In</h2>
+    <button class="btn btn-outline-secondary" (click)="cancel()">
+      Volver
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Spinner -->
+  <div *ngIf="isLoading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading">
+    <!-- Información de la Reserva Seleccionada -->
+    <div class="card mb-4 shadow-sm" *ngIf="selectedBooking">
+      <div class="card-header bg-dark text-white">
+        Detalles de la Reserva (#{{ selectedBooking.id }})
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4">
+            <p class="mb-1"><strong>Habitación:</strong> {{ selectedBooking.room?.roomNumber || selectedBooking.room?.['number'] || selectedBooking.roomNumber || 'N/A' }}</p>
+          </div>
+          <div class="col-md-4">
+            <p class="mb-1"><strong>Entrada:</strong> {{ selectedBooking.checkIn }}</p>
+            <p class="mb-1"><strong>Salida:</strong> {{ selectedBooking.checkOut }}</p>
+          </div>
+          <div class="col-md-4">
+            <p class="mb-1"><strong>Total:</strong> {{ selectedBooking.totalPrice | currency:'USD':'symbol':'1.2-2' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paso actual: Selección de Huésped (Paso 2) o Confirmación (Paso 3) -->
+    <div *ngIf="step === 2">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Seleccionar Huésped Titular</h4>
+        <button class="btn btn-sm btn-success" (click)="goToCreateUser()">
+          + Nuevo Huésped
+        </button>
+      </div>
+
+      <!-- Filtro de huéspedes -->
+      <div class="mb-3">
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Filtrar por nombre, apellido o DNI..." 
+          [(ngModel)]="guestFilter"
+        />
+      </div>
+
+      <!-- Tabla de huéspedes -->
+      <div class="table-responsive shadow-sm rounded">
+        <table class="table table-striped table-hover align-middle mb-0">
+          <thead class="table-secondary">
+            <tr>
+              <th>Nombre y Apellido</th>
+              <th>DNI</th>
+              <th>Email</th>
+              <th class="text-end">Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let guest of filteredGuests">
+              <td>{{ guest.name }} {{ guest.surname }}</td>
+              <td>{{ guest.dni }}</td>
+              <td>{{ guest.email }}</td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-primary" (click)="selectGuest(guest)">
+                  Seleccionar
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="filteredGuests.length === 0">
+              <td colspan="4" class="text-center py-4 text-muted">
+                No se encontraron huéspedes registrados.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Paso 3: Confirmación Final -->
+    <div *ngIf="step === 3" class="card shadow-sm">
+      <div class="card-header bg-primary text-white">
+        Confirmar Ingreso
+      </div>
+      <div class="card-body">
+        <p>Estás a punto de registrar el check-in para la reserva <strong>#{{ selectedBooking?.id }}</strong> a nombre de:</p>
+        <div class="alert alert-light border mb-4">
+          <h5 class="alert-heading mb-1">{{ selectedGuest?.name }} {{ selectedGuest?.surname }}</h5>
+          <p class="mb-0 text-muted">DNI: {{ selectedGuest?.dni }} | Email: {{ selectedGuest?.email }}</p>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+          <button class="btn btn-secondary" (click)="step = 2">Cambiar Huésped</button>
+          <button class="btn btn-success" (click)="confirmCheckIn()">Confirmar Check-In</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
