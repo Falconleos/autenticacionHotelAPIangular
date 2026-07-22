@@ -101,4 +101,19 @@ export class CheckInListComponent implements OnInit {
     }
   }
 
+  checkOutCheckIn(id: number): void {
+    if (confirm('¿Desea realizar el Check-Out de esta estadía?')) {
+      this.checkInService.checkOut(id).subscribe({
+        next: () => {
+          alert('Check-Out realizado exitosamente.');
+          this.loadActiveCheckIns(); // Recargamos la lista para reflejar los cambios
+        },
+        error: (err: any) => {
+          console.error('Error al realizar el check-out:', err);
+          alert('No se pudo realizar el check-out.');
+        }
+      });
+    }
+  }
+
 }

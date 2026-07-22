@@ -101,6 +101,11 @@
                 (click)="interruptCheckIn(checkIn.id)">
                 Interrumpir
               </button>
+              <button 
+                class="btn btn-sm btn-warning text-dark me-1" 
+                (click)="checkOutCheckIn(checkIn.id)">
+                Check-Out
+              </button>
             </td>
           </tr>
           <tr *ngIf="activeCheckIns.length === 0">
