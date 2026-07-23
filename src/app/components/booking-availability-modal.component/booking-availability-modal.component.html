@@ -1,216 +1,206 @@
 <!-- Backdrop/Fondo oscuro del modal -->
-<div class="modal-backdrop fade show"></div>
+<div class="modal-backdrop"></div>
 
 <!-- Modal Container -->
-<div class="modal d-block fade show" tabindex="-1" role="dialog" aria-modal="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content border-0 shadow-lg">
+<div class="modal-card-wrapper" tabindex="-1" role="dialog" aria-modal="true">
+  <div class="modal-card modal-xl">
 
-      <!-- Header del Modal -->
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title fw-bold">
-          <i class="bi bi-calendar-check me-2"></i>
-          <span *ngIf="currentStep === 1">Paso 1: Consultar Disponibilidad de Habitaciones</span>
-          <span *ngIf="currentStep === 2">Paso 2: Confirmar Datos de la Reserva</span>
-        </h5>
-        <button type="button" class="btn-close btn-close-white" (click)="close()"></button>
+    <!-- Botón de Cancelar Arriba a la Izquierda (Única vía de salida/cierre para ambos pasos) -->
+    <button class="btn-back" (click)="close()" title="Cancelar / Cerrar modal">
+      ← Cancelar
+    </button>
+
+    <!-- Header del Modal -->
+    <div class="modal-header">
+      <h3 class="modal-title">
+        <span *ngIf="currentStep === 1">📅 Paso 1: Consultar Disponibilidad de Habitaciones</span>
+        <span *ngIf="currentStep === 2">📝 Paso 2: Confirmar Datos de la Reserva</span>
+      </h3>
+    </div>
+
+    <!-- Cuerpo del Modal -->
+    <div class="modal-body">
+
+      <!-- Alerta de Error -->
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        <span>{{ errorMessage }}</span>
       </div>
 
-      <!-- Cuerpo del Modal -->
-      <div class="modal-body p-4">
-
-        <!-- Alerta de Error -->
-        <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
-          {{ errorMessage }}
-          <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
-        </div>
-
-        <!-- ================= PASO 1: BÚSQUEDA Y SELECCIÓN DE HABITACIÓN ================= -->
-        <div *ngIf="currentStep === 1">
-          
-          <!-- Formulario de Consulta de Fechas -->
-          <div class="card bg-light border-0 mb-4">
-            <div class="card-body">
-              <form (ngSubmit)="onSearchAvailability()" class="row g-3 align-items-end">
-                
-                <div class="col-md-4">
-                  <label class="form-label small fw-bold">Fecha Check-In *</label>
-                  <input 
-                    type="date" 
-                    class="form-control" 
-                    [(ngModel)]="searchCheckIn" 
-                    name="searchCheckIn" 
-                    required>
-                </div>
-
-                <div class="col-md-4">
-                  <label class="form-label small fw-bold">Fecha Check-Out *</label>
-                  <input 
-                    type="date" 
-                    class="form-control" 
-                    [(ngModel)]="searchCheckOut" 
-                    name="searchCheckOut" 
-                    required>
-                </div>
-
-                <div class="col-md-2">
-                  <label class="form-label small fw-bold">Huéspedes *</label>
-                  <input 
-                    type="number" 
-                    class="form-control" 
-                    min="1" 
-                    max="10" 
-                    [(ngModel)]="searchGuestCount" 
-                    name="searchGuestCount" 
-                    required>
-                </div>
-
-                <div class="col-md-2">
-                  <button type="submit" class="btn btn-primary w-100" [disabled]="isSearching">
-                    <span *ngIf="isSearching" class="spinner-border spinner-border-sm me-1"></span>
-                    <span>Buscar</span>
-                  </button>
-                </div>
-
-              </form>
-            </div>
-          </div>
-
-          <!-- Spinner durante la búsqueda -->
-          <div *ngIf="isSearching" class="text-center py-4">
-            <div class="spinner-border text-primary" role="status"></div>
-            <p class="text-muted small mt-2">Buscando habitaciones disponibles...</p>
-          </div>
-
-          <!-- Listado/Grilla de Habitaciones Disponibles -->
-          <div *ngIf="hasSearched && !isSearching">
+      <!-- ================= PASO 1: BÚSQUEDA Y SELECCIÓN DE HABITACIÓN ================= -->
+      <div *ngIf="currentStep === 1">
+        
+        <!-- Formulario de Consulta de Fechas -->
+        <div class="search-filters-card">
+          <form (ngSubmit)="onSearchAvailability()" class="search-grid">
             
-            <h6 class="fw-bold mb-3" *ngIf="availableRooms.length > 0">
-              Habitaciones Disponibles ({{ availableRooms.length }}) - Estadía: <span class="text-primary">{{ calculateNights() }} noche(s)</span>
-            </h6>
+            <div class="form-group">
+              <label class="form-label">Fecha Check-In *</label>
+              <input 
+                type="date" 
+                class="form-control dark-input" 
+                [(ngModel)]="searchCheckIn" 
+                name="searchCheckIn" 
+                required>
+            </div>
 
-            <div class="row g-3" *ngIf="availableRooms.length > 0">
-              <div class="col-md-4" *ngFor="let room of availableRooms">
-                <div class="card h-100 border shadow-sm hover-shadow">
-                  <div class="card-body d-flex flex-column justify-content-between">
-                    <div>
-                      <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h5 class="card-title fw-bold text-primary mb-0">Hab. {{ room.roomNumber }}</h5>
-                        <span class="badge bg-secondary">{{ room.roomType }}</span>
-                      </div>
-                      <p class="card-text text-muted small mb-2" *ngIf="room.description">
-                        {{ room.description }}
-                      </p>
-                      <ul class="list-unstyled small text-muted mb-3">
-                        <li><i class="bi bi-people me-1"></i> Capacidad: <strong>{{ room.capacity }} personas</strong></li>
-                        <li><i class="bi bi-cash-stack me-1"></i> Precio/Noche: <strong>${{ room.pricePerNight | number:'1.2-2' }}</strong></li>
-                        <hr class="my-2">
-                        <li class="text-success fw-bold fs-6">
-                          <i class="bi bi-tag-fill me-1"></i> Total Estancia: ${{ ((room.pricePerNight ?? 0) * (calculateNights() ?? 0)) | number:'1.2-2' }}
-                        </li>
-                      </ul>
-                    </div>
+            <div class="form-group">
+              <label class="form-label">Fecha Check-Out *</label>
+              <input 
+                type="date" 
+                class="form-control dark-input" 
+                [(ngModel)]="searchCheckOut" 
+                name="searchCheckOut" 
+                required>
+            </div>
 
-                    <button class="btn btn-outline-primary w-100 mt-2" (click)="selectRoom(room)">
-                      Seleccionar Habitación
-                    </button>
+            <div class="form-group">
+              <label class="form-label">Huéspedes *</label>
+              <input 
+                type="number" 
+                class="form-control dark-input" 
+                min="1" 
+                max="10" 
+                [(ngModel)]="searchGuestCount" 
+                name="searchGuestCount" 
+                required>
+            </div>
+
+            <div class="form-group d-flex align-items-end">
+              <button type="submit" class="btn btn-primary w-100" [disabled]="isSearching">
+                <span *ngIf="isSearching" class="spinner-border spinner-border-sm me-1"></span>
+                <span>Buscar</span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Spinner durante la búsqueda -->
+        <div *ngIf="isSearching" class="loading-state text-center py-4">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="text-muted small mt-2">Buscando habitaciones disponibles...</p>
+        </div>
+
+        <!-- Listado/Grilla de Habitaciones Disponibles -->
+        <div *ngIf="hasSearched && !isSearching">
+          
+          <h5 class="section-title mb-3" *ngIf="availableRooms.length > 0">
+            Habitaciones Disponibles ({{ availableRooms.length }}) - Estadía: <span class="text-info">{{ calculateNights() }} noche(s)</span>
+          </h5>
+
+          <div class="rooms-grid" *ngIf="availableRooms.length > 0">
+            <div *ngFor="let room of availableRooms" class="room-option-card">
+              <div class="room-option-body">
+                <div>
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="room-option-title">Hab. {{ room.roomNumber }}</h5>
+                    <span class="badge badge-info">{{ room.roomType }}</span>
                   </div>
+                  <p class="subtitle mb-3" *ngIf="room.description">
+                    {{ room.description }}
+                  </p>
+                  <ul class="room-details-list">
+                    <li>👥 Capacidad: <strong>{{ room.capacity }} personas</strong></li>
+                    <li>💵 Precio/Noche: <strong>${{ room.pricePerNight | number:'1.2-2' }}</strong></li>
+                    <li class="total-price-item">
+                      🏷️ Total Estancia: ${{ ((room.pricePerNight ?? 0) * (calculateNights() ?? 0)) | number:'1.2-2' }}
+                    </li>
+                  </ul>
                 </div>
+
+                <button class="btn btn-secondary w-100 mt-3" (click)="selectRoom(room)">
+                  Seleccionar Habitación
+                </button>
               </div>
             </div>
+          </div>
 
-            <!-- Estado Vacío -->
-            <div *ngIf="availableRooms.length === 0" class="text-center py-4 text-muted">
-              <p class="mb-0">No se encontraron habitaciones disponibles para el rango de fechas y huéspedes seleccionados.</p>
-            </div>
-
+          <!-- Estado Vacío -->
+          <div *ngIf="availableRooms.length === 0" class="empty-state text-center py-4 text-muted">
+            <p class="mb-0">No se encontraron habitaciones disponibles para el rango de fechas y huéspedes seleccionados.</p>
           </div>
 
         </div>
 
-        <!-- ================= PASO 2: FORMULARIO DE RESERVA ================= -->
-        <div *ngIf="currentStep === 2">
-          
-          <!-- Resumen de la Habitación Seleccionada -->
-          <div class="alert alert-info d-flex justify-content-between align-items-center mb-4">
-            <div>
-              <strong class="d-block fs-5">Habitación #{{ selectedRoom?.roomNumber }} ({{ selectedRoom?.roomType }})</strong>
-              <small class="text-muted">Fechas: <strong>{{ bookingRequest.checkIn }}</strong> al <strong>{{ bookingRequest.checkOut }}</strong> ({{ calculateNights() }} noche(s) - {{ bookingRequest.guestCount }} huésped/es)</small>
-              <div class="text-success fw-bold mt-2 fs-6">
-                <i class="bi bi-cash me-1"></i> Total a Pagar: ${{ (((selectedRoom?.pricePerNight ?? 0)) * (calculateNights() ?? 0)) | number:'1.2-2' }}
-              </div>
+      </div>
+
+      <!-- ================= PASO 2: FORMULARIO DE RESERVA ================= -->
+      <div *ngIf="currentStep === 2">
+        
+        <!-- Resumen de la Habitación Seleccionada -->
+        <div class="selected-room-banner mb-4">
+          <div>
+            <strong class="d-block fs-5 text-light">Habitación #{{ selectedRoom?.roomNumber }} ({{ selectedRoom?.roomType }})</strong>
+            <small class="subtitle">Fechas: <strong>{{ bookingRequest.checkIn }}</strong> al <strong>{{ bookingRequest.checkOut }}</strong> ({{ calculateNights() }} noche(s) - {{ bookingRequest.guestCount }} huésped/es)</small>
+            <div class="price-text mt-2 fs-6">
+              💳 Total a Pagar: ${{ (((selectedRoom?.pricePerNight ?? 0)) * (calculateNights() ?? 0)) | number:'1.2-2' }}
             </div>
-            <button type="button" class="btn btn-sm btn-outline-dark" (click)="goBackToStep1()">
-              Cambiar Habitación
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" (click)="goBackToStep1()">
+            Cambiar Habitación
+          </button>
+        </div>
+
+        <!-- Formulario Datos Huésped -->
+        <form (ngSubmit)="onSubmitBooking()" #bookingForm="ngForm">
+          <div class="form-grid-step2">
+            
+            <div class="form-group">
+              <label class="form-label">Nombre *</label>
+              <input 
+                type="text" 
+                class="form-control dark-input" 
+                [(ngModel)]="bookingRequest.guestFirstName" 
+                name="guestFirstName" 
+                required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Apellido *</label>
+              <input 
+                type="text" 
+                class="form-control dark-input" 
+                [(ngModel)]="bookingRequest.guestLastName" 
+                name="guestLastName" 
+                required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Teléfono *</label>
+              <input 
+                type="text" 
+                class="form-control dark-input" 
+                [(ngModel)]="bookingRequest.guestPhone" 
+                name="guestPhone" 
+                required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Observaciones (Opcional)</label>
+              <input 
+                type="text" 
+                class="form-control dark-input" 
+                [(ngModel)]="bookingRequest.observation" 
+                name="observation">
+            </div>
+
+          </div>
+
+          <!-- Footer con Botones del Paso 2 -->
+          <div class="modal-footer border-0 px-0 pb-0 mt-4 d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary" (click)="goBackToStep1()">
+              Volver
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="!bookingForm.form.valid || isSaving">
+              <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-1"></span>
+              <span>Confirmar Reserva</span>
             </button>
           </div>
+        </form>
 
-          <!-- Formulario Datos Huésped -->
-          <form (ngSubmit)="onSubmitBooking()" #bookingForm="ngForm">
-            <div class="row g-3">
-              
-              <div class="col-md-6">
-                <label class="form-label small fw-bold">Nombre *</label>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  [(ngModel)]="bookingRequest.guestFirstName" 
-                  name="guestFirstName" 
-                  required>
-              </div>
-
-              <div class="col-md-6">
-                <label class="form-label small fw-bold">Apellido *</label>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  [(ngModel)]="bookingRequest.guestLastName" 
-                  name="guestLastName" 
-                  required>
-              </div>
-
-              <div class="col-md-6">
-                <label class="form-label small fw-bold">Teléfono *</label>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  [(ngModel)]="bookingRequest.guestPhone" 
-                  name="guestPhone" 
-                  required>
-              </div>
-
-              <div class="col-md-6">
-                <label class="form-label small fw-bold">Observaciones (Opcional)</label>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  [(ngModel)]="bookingRequest.observation" 
-                  name="observation">
-              </div>
-
-            </div>
-
-            <!-- Footer con Botones del Paso 2 -->
-            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-              <button type="button" class="btn btn-secondary" (click)="goBackToStep1()">
-                Volver
-              </button>
-              <button type="submit" class="btn btn-success" [disabled]="!bookingForm.form.valid || isSaving">
-                <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-1"></span>
-                <span>Confirmar Reserva</span>
-              </button>
-            </div>
-          </form>
-
-        </div>
-
-      </div>
-
-      <!-- Footer General Paso 1 -->
-      <div class="modal-footer bg-light" *ngIf="currentStep === 1">
-        <button type="button" class="btn btn-secondary" (click)="close()">Cerrar</button>
       </div>
 
     </div>
+
   </div>
 </div>

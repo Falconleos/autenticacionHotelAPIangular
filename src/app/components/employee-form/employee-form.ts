@@ -10,7 +10,8 @@ import { Shift } from '../../models/shift.enum';
   selector: 'app-employee-form',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './employee-form.html'
+  templateUrl: './employee-form.html',
+  styleUrls: ['./employee-form.css']
 })
 export class EmployeeForm implements OnInit {
 

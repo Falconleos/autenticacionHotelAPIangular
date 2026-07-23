@@ -1,31 +1,65 @@
-<h2>{{ isAssignMode ? 'Asignar Empleo' : 'Modificar Empleado' }}</h2>
+<div class="login-container">
+  <div class="login-card employee-form-card">
 
-<!-- Información de lectura del usuario vinculado -->
-<div>
-  <p><strong>Usuario:</strong> {{ userFullName }}</p>
-  <p><strong>Email:</strong> {{ userEmail }}</p>
-  <p><strong>Rol asignado:</strong> {{ userRole }}</p>
+    <!-- Botón de Volver Arriba a la Izquierda -->
+    <button class="btn-back" (click)="cancel()" title="Volver">
+      ← Volver
+    </button>
+
+    <!-- Título Dinámico -->
+    <h2>{{ isAssignMode ? 'Asignar Perfil de Empleado' : 'Modificar Empleado' }}</h2>
+    <p class="subtitle">Complete los datos de turno y remuneración</p>
+
+    <!-- Información de lectura del usuario vinculado -->
+    <div class="user-info-box">
+      <div class="info-item">
+        <span class="info-label">Usuario:</span>
+        <span class="info-value">{{ userFullName }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Email:</span>
+        <span class="info-value">{{ userEmail }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Rol:</span>
+        <span class="role-badge">{{ userRole }}</span>
+      </div>
+    </div>
+
+    <!-- Formulario para Shift y Salary -->
+    <form (submit)="saveEmployee()">
+      <div class="form-group">
+        <label for="shift">Turno</label>
+        <select id="shift" [(ngModel)]="shift" name="shift" required class="form-control">
+          <option *ngFor="let s of shifts" [value]="s">
+            {{ s }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="salary">Sueldo ($)</label>
+        <input 
+          type="number" 
+          id="salary" 
+          [(ngModel)]="salary" 
+          name="salary" 
+          min="1" 
+          step="0.01" 
+          required 
+          class="form-control"
+          placeholder="Ej. 150000">
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="btn-submit">
+          {{ isAssignMode ? 'Asignar Empleo' : 'Guardar Cambios' }}
+        </button>
+        <button type="button" class="btn-cancel" (click)="cancel()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+
+  </div>
 </div>
-
-<hr />
-
-<!-- Formulario para Shift y Salary -->
-<form (submit)="saveEmployee()">
-  <div>
-    <label>Turno:</label>
-    <select [(ngModel)]="shift" name="shift" required>
-      <option *ngFor="let s of shifts" [value]="s">
-        {{ s }}
-      </option>
-    </select>
-  </div>
-
-  <div>
-    <label>Sueldo:</label>
-    <input type="number" [(ngModel)]="salary" name="salary" min="1" step="0.01" required>
-  </div>
-
-  <br>
-  <button type="submit">{{ isAssignMode ? 'Asignar Empleo' : 'Guardar Cambios' }}</button>
-  <button type="button" (click)="cancel()">Cancelar</button>
-</form>

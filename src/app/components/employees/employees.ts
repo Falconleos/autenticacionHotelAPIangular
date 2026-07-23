@@ -120,6 +120,10 @@ export class Employees implements OnInit {
     });
   }
 
+  goBack(): void {
+    this.router.navigate(['/welcome']); // Cambia '/dashboard' por la ruta correcta de tu panel principal
+  }
+
   assignJob(userId: number): void {
     this.router.navigate(['/empleados/asignar', userId]);
   }
@@ -133,19 +137,18 @@ export class Employees implements OnInit {
   }
 
   deleteEmployee(employeeId: number): void {
-  if (confirm('¿Estás seguro de que deseas eliminar este perfil de empleado?')) {
-    this.employeeService.deleteEmployee(employeeId).subscribe({
-      next: () => {
-        alert('Perfil de empleado eliminado con éxito');
-        this.loadData();
-      },
-      error: (err) => {
-        console.error('Error al eliminar empleado:', err);
-        // Extraemos el mensaje proveniente de la API si existe
-        const msg = err?.error?.message || err?.error || 'No se pudo eliminar el empleado ya que tiene registros/reservas asociados.';
-        alert(msg);
-      }
-    });
+    if (confirm('¿Estás seguro de que deseas eliminar este perfil de empleado?')) {
+      this.employeeService.deleteEmployee(employeeId).subscribe({
+        next: () => {
+          alert('Perfil de empleado eliminado con éxito');
+          this.loadData();
+        },
+        error: (err) => {
+          console.error('Error al eliminar empleado:', err);
+          const msg = err?.error?.message || err?.error || 'No se pudo eliminar el empleado ya que tiene registros/reservas asociados.';
+          alert(msg);
+        }
+      });
+    }
   }
-}
 }

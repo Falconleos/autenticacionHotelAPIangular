@@ -1,38 +1,65 @@
-<div class="container">
-  <h1>Usuarios</h1>
-
-  <!-- Filtro y botón de creación -->
-  <div class="actions-bar">
-    <input type="text" placeholder="Filtrar por nombre o DNI..." (input)="onFilter($event)">
+<div class="login-container">
+  <div class="login-card user-management-card">
     
-    <!-- Se muestra solo si tiene permisos -->
-    <button *ngIf="canCreateUser()" routerLink="/usuarios/crear">Nuevo Usuario</button>
-  </div>
+    <!-- Botón para volver al menú principal -->
+    <div class="top-nav-bar">
+      <button routerLink="/welcome" class="btn-back" title="Volver al menú principal">
+        ⬅️ Volver
+      </button>
+    </div>
 
-  <table class="user-table">
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>DNI</th>
-        <th>Email</th>
-        <th>Rol</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let user of filteredUsers">
-        <td>{{ user.name }}</td>
-        <td>{{ user.surname }}</td>
-        <td>{{ user.dni }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.roles[0]?.name }}</td>
-        <td>
-          <button (click)="editUser(user.id)">✏️</button>
-          <button (click)="changePassword(user.id)" title="Cambiar contraseña">🔑</button>
-          <button (click)="deleteUser(user.id)">❌</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <h2>Usuarios</h2>
+    <p class="subtitle">Gestión de Personal</p>
+
+    <!-- Alerta de Error Dinámica -->
+    @if (errorMessage) {
+      <div class="alert-error">
+        {{ errorMessage }}
+      </div>
+    }
+
+    <!-- Filtro y botón de creación -->
+    <div class="actions-bar">
+      <div class="form-group search-group">
+        <input type="text" placeholder="Filtrar por nombre o DNI..." (input)="onFilter($event)">
+      </div>
+      
+      <!-- Se muestra solo si tiene permisos -->
+      <button *ngIf="canCreateUser()" routerLink="/usuarios/crear" class="btn-submit btn-create">
+        Nuevo Usuario
+      </button>
+    </div>
+
+    <div class="table-responsive">
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>DNI</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of filteredUsers">
+            <td>{{ user.username }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.surname }}</td>
+            <td>{{ user.dni }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.roles[0]?.name }}</td>
+            <td class="action-buttons-cell">
+              <button (click)="editUser(user.id)" class="btn-icon" title="Editar">✏️</button>
+              <button (click)="changePassword(user.id)" class="btn-icon" title="Cambiar contraseña">🔑</button>
+              <button (click)="deleteUser(user.id)" class="btn-icon" title="Eliminar">❌</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
 </div>

@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { BookingService } from '../../services/booking.service';
 import { BookingDTOResponse, BookingStatus } from '../../models/booking.model';
 import { BookingAvailabilityModalComponent } from '../booking-availability-modal.component/booking-availability-modal.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-booking-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, BookingAvailabilityModalComponent],
+  imports: [CommonModule, FormsModule,RouterModule, BookingAvailabilityModalComponent],
   templateUrl: './booking-list.component.html',
   styleUrl: './booking-list.component.css'
 })

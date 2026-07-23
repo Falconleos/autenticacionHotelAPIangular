@@ -31,9 +31,17 @@ export class Login {
 
     this.errorMessage = null;
 
+    // Guardamos el username ingresado en el formulario para usarlo después
+    const usernameIngresado = this.loginForm.value.username;
+
     this.authService.login(this.loginForm.value).subscribe({
       next: (response) => {
         localStorage.setItem('token', response.token);
+        localStorage.setItem('currentUser', JSON.stringify(response));
+        
+        // <-- AGREGA ESTA LÍNEA AQUÍ -->
+        localStorage.setItem('username', usernameIngresado);
+
         this.router.navigate(['/welcome']);
       },
       error: (err) => {
@@ -45,8 +53,7 @@ export class Login {
           this.errorMessage = err.error || 'Error al conectar con el servidor.';
         }
 
-        this.cdr.detectChanges(); // 3. Forzar a Angular a pintar el error YA
-
+        this.cdr.detectChanges();
       }
     });
   }

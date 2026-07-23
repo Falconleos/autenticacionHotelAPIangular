@@ -1,48 +1,144 @@
-<div class="container">
-  <h1>¡Bienvenido al sistema de gestión hotelera!</h1>
-  <p class="subtitle">Seleccioná un módulo para comenzar a trabajar</p>
-
-  <div class="dashboard-grid">
-    <!-- Menú Usuarios -->
-    <div class="menu-card">
-      <div class="card-icon">👥</div>
-      <h3>Menú Usuarios</h3>
-      <p>Gestión de cuentas, roles y permisos del personal.</p>
-      <button class="btn-menu" routerLink="/usuarios">Ingresar</button>
+<div class="app-layout">
+  
+  <!-- BARRA LATERAL IZQUIERDA (Sidebar de Navegación) -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h2>LuxeStay MS</h2>
     </div>
 
-    <!-- Menú Reservas (¡ACTIVADO!) -->
-    <div class="menu-card">
-      <div class="card-icon">📅</div>
-      <h3>Menú Reservas</h3>
-      <p>Alta, modificación y control de reservas activas.</p>
-      <button class="btn-menu" routerLink="/reservas">Ingresar</button>
-    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-category">Gestión</div>
+      <a routerLink="/reservas" class="nav-item">
+        <span>📅</span> Reservas
+      </a>
+      <a routerLink="/check-ins" class="nav-item">
+        <span>🔑</span> Check-in
+      </a>
+      <a routerLink="/habitaciones" class="nav-item">
+        <span>🏨</span> Habitaciones
+      </a>
+      <a routerLink="/usuarios" class="nav-item">
+        <span>👥</span> Usuarios
+      </a>
+      <a routerLink="/empleados" class="nav-item">
+        <span>💼</span> Empleados
+      </a>
+    </nav>
 
-    <!-- Menú Check-In -->
-    <div class="menu-card disabled">
-      <div class="card-icon">🔑</div>
-      <h3>Menú Check-In</h3>
-      <p>Registro de entradas, salidas y asignación de llaves.</p>
-      <button class="btn btn-info btn-lg" routerLink="/check-ins">
-  Gestión de Check-Ins
-</button>
+    <div class="sidebar-footer">
+      <a routerLink="/settings" class="nav-item">
+        <span>⚙️</span> Logout
+      </a>
+      <a routerLink="/support" class="nav-item">
+        <span>❓</span> Support
+      </a>
     </div>
+  </aside>
 
-    <!-- Menú Empleados -->
-    <div class="menu-card">
-      <div class="card-icon">💼</div>
-      <h3>Menú Empleados</h3>
-      <p>Control de turnos, horarios y legajos del staff.</p>
-      <button class="btn-menu" routerLink="/empleados">Ingresar</button>
-    </div>
+  <!-- CONTENEDOR PRINCIPAL (Derecha) -->
+  <div class="main-content-wrapper">
+    
+    <!-- NAVBAR SUPERIOR -->
+    <header class="top-navbar">
+      <!-- Buscador de Acceso Rápido -->
+      <div class="search-container">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          placeholder="Search reservations, guests..." 
+          class="search-input">
+      </div>
 
-    <!-- Menú Habitaciones -->
-    <div class="menu-card">
-      <div class="card-icon">🏨</div>
-      <h3>Menú Habitaciones</h3>
-      <p>Estado de limpieza, mantenimiento y categorías.</p>
-      <button class="btn-menu" routerLink="/habitaciones">Ingresar</button>
+      <!-- Perfil del Usuario Logueado (Dinámico) -->
+    <div class="user-profile-badge">
+      <div class="user-avatar">
+        👤
+      </div>
+      <div class="user-info text-center">
+        <span class="user-name">{{ currentUserName }}</span>
+        <span class="user-role badge">{{ currentUserRole }}</span>
+      </div>
     </div>
+    </header>
+
+    <!-- ÁREA DE CONTENIDO DINÁMICO -->
+    <main class="dashboard-content">
+      
+      <!-- Fila 1: Tarjetas de KPIs Superiores -->
+      <div class="kpi-grid mb-4">
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">TOTAL ARRIVALS</span>
+            <span class="kpi-icon">➡️</span>
+          </div>
+          <div class="kpi-value">48 <small class="kpi-sub">/ 52 expected</small></div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">TODAY'S OCCUPANCY</span>
+            <span class="kpi-icon">🏨</span>
+          </div>
+          <div class="kpi-value">84.2% <small class="kpi-sub">Capacity</small></div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">NEW BOOKINGS (24H)</span>
+            <span class="kpi-icon">📈</span>
+          </div>
+          <div class="kpi-value">24 <small class="kpi-sub">Reservations</small></div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">PENDING TASKS</span>
+            <span class="kpi-icon">⚠️</span>
+          </div>
+          <div class="kpi-value">07 <small class="kpi-sub">Alerts</small></div>
+        </div>
+      </div>
+
+      <!-- Fila 2: Gráficos y Panel de Analítica / Ocupación -->
+      <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+          <div class="placeholder-panel h-100 p-4">
+            <h5 class="panel-title mb-3">Room Allocation & Analytics</h5>
+            <div class="placeholder-box d-flex align-items-center justify-content-center">
+              <em>[Espacio dinámico reservado para gráficos estadísticos y asignación de habitaciones]</em>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">  
+          <div class="placeholder-panel h-100 p-4">
+            <h5 class="panel-title mb-3">Revenue Overview</h5>
+            <div class="placeholder-box d-flex align-items-center justify-content-center">
+              <em>[Espacio reservado para métricas de ingresos]</em>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fila 3: Tabla de Operaciones y Feed de Actividad -->
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="placeholder-panel p-4">
+            <h5 class="panel-title mb-3">Operations Log</h5>
+            <div class="placeholder-box text-center py-5">
+              <em>[Espacio reservado para la tabla de historial y operaciones recientes]</em>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="placeholder-panel p-4">
+            <h5 class="panel-title mb-3">Action Feed</h5>
+            <div class="placeholder-box text-center py-5">
+              <em>[Espacio reservado para notificaciones y alertas urgentes]</em>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
   </div>
 </div>

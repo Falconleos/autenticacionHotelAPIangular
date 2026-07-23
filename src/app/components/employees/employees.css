@@ -1,31 +1,208 @@
-/* Fila atenuada para usuarios no-GUEST que aún no son empleados */
-.row-pending {
-  opacity: 0.55;
-  background-color: #f9f9f9;
+/* Layout General de Pantalla Completa - Estilo Dashboard / Login */
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #0f1715;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: #e2e8f0;
+  margin: 0;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
 }
 
-.employee-table {
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Tarjeta Principal ampliada para contener la tabla de personal cómodamente */
+.login-card.employees-management-card {
+  background: rgba(25, 35, 33, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 1200px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.login-card h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Alerta de Error Dinámica */
+.alert-error {
+  background-color: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Contenedor y Estilo de la Tabla Adaptado */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.user-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
-}
-
-.employee-table th, .employee-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
+  background-color: rgba(15, 23, 21, 0.4);
   text-align: left;
 }
 
-.employee-table th {
-  background-color: #f4f4f4;
+.user-table th, 
+.user-table td {
+  padding: 0.85rem 1rem;
+  font-size: 0.9rem;
 }
 
-.error-banner {
-  color: red;
-  margin-bottom: 1rem;
+.user-table th {
+  background-color: rgba(15, 23, 21, 0.8);
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-button {
-  margin-right: 5px;
+.user-table td {
+  color: #e2e8f0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.user-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.user-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Fila atenuada para usuarios pendientes */
+.row-pending {
+  opacity: 0.55;
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+.text-muted {
+  color: #64748b;
+}
+
+/* Badges y Etiquetas */
+.role-badge {
+  background-color: rgba(217, 119, 6, 0.15);
+  color: #fbbf24;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid rgba(217, 119, 6, 0.3);
+}
+
+.protected-badge {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  background: rgba(15, 23, 21, 0.6);
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: inline-block;
+}
+
+/* Botones de Iconos de Acción dentro de la Tabla */
+.action-buttons-cell {
+  white-space: nowrap;
+}
+
+.btn-icon {
+  background: rgba(15, 23, 21, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+  margin-right: 0.35rem;
   cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Botón de Asignar Empleo (Estilo Ámbar) */
+.btn-submit.btn-assign {
+  width: auto !important;
+  margin-top: 0 !important;
+  padding: 0.4rem 0.75rem !important;
+  font-size: 0.8rem !important;
+  background-color: #d97706;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(217, 119, 6, 0.2);
+}
+
+/* Posicionamiento relativo para la tarjeta para anclar el botón de volver */
+.login-card.employees-management-card {
+  position: relative;
+}
+
+/* Botón Volver estilizado arriba a la izquierda */
+.btn-back {
+  position: absolute;
+  top: 1.5rem;
+  left: 2rem;
+  background: rgba(15, 23, 21, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn-submit.btn-assign:hover {
+  background-color: #b45309;
 }

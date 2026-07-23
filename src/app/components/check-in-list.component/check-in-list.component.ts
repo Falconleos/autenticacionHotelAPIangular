@@ -1,33 +1,33 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router'; // <--- Asegúrate de tener RouterLink aquí
 import { BookingService } from '../../services/booking.service';
-import { CheckInService } from '../../services/check-in.service'; // <--- Importamos el servicio de check-in
+import { CheckInService } from '../../services/check-in.service';
 import { BookingDTOResponse } from '../../models/booking.model';
 import { CheckInDTOResponse } from '../../models/check-in.model';
 
 @Component({
   selector: 'app-check-in-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink], // <--- RouterLink incluido
   templateUrl: './check-in-list.component.html',
   styleUrl: './check-in-list.component.css'
 })
 export class CheckInListComponent implements OnInit {
   private readonly bookingService = inject(BookingService);
-  private readonly checkInService = inject(CheckInService); // <--- Inyectamos el servicio
+  private readonly checkInService = inject(CheckInService);
   private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
 
   todaysBookings: BookingDTOResponse[] = [];
-  activeCheckIns: any[] = []; // <--- Lista para los check-ins activos
+  activeCheckIns: any[] = [];
   isLoading: boolean = false;
   errorMessage: string = '';
 
   ngOnInit(): void {
     this.loadTodaysBookings();
-    this.loadActiveCheckIns(); // <--- Llamamos al método para cargar los activos
+    this.loadActiveCheckIns();
   }
 
   loadTodaysBookings(): void {
@@ -50,7 +50,6 @@ export class CheckInListComponent implements OnInit {
     });
   }
 
-  // <--- Nuevo método para obtener los check-ins activos
   loadActiveCheckIns(): void {
     this.checkInService.list(true).subscribe({
       next: (data: CheckInDTOResponse[]) => {
@@ -64,7 +63,6 @@ export class CheckInListComponent implements OnInit {
   }
 
   makeCheckIn(booking: BookingDTOResponse): void {
-    console.log('Reserva seleccionada para check-in:', booking);
     this.router.navigate(['/check-ins/new'], { state: { selectedBooking: booking } });
   }
 
@@ -73,7 +71,7 @@ export class CheckInListComponent implements OnInit {
       this.checkInService.payStay(id).subscribe({
         next: () => {
           alert('Pago registrado exitosamente');
-          this.loadActiveCheckIns(); // Recargamos la tabla para ver el cambio
+          this.loadActiveCheckIns();
         },
         error: (err) => {
           console.error('Error al registrar el pago:', err);
@@ -89,7 +87,7 @@ export class CheckInListComponent implements OnInit {
       this.checkInService.interruptStay(id, reason).subscribe({
         next: () => {
           alert('Estadía interrumpida exitosamente.');
-          this.loadActiveCheckIns(); // Recargamos la lista
+          this.loadActiveCheckIns();
         },
         error: (err: any) => {
           console.error('Error al interrumpir la estadía:', err);
@@ -106,7 +104,7 @@ export class CheckInListComponent implements OnInit {
       this.checkInService.checkOut(id).subscribe({
         next: () => {
           alert('Check-Out realizado exitosamente.');
-          this.loadActiveCheckIns(); // Recargamos la lista para reflejar los cambios
+          this.loadActiveCheckIns();
         },
         error: (err: any) => {
           console.error('Error al realizar el check-out:', err);
@@ -115,5 +113,4 @@ export class CheckInListComponent implements OnInit {
       });
     }
   }
-
 }

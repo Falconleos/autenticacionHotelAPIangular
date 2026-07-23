@@ -27,6 +27,8 @@ export class UsuarioForm implements OnInit {
     { label: 'Huésped', value: 'GUEST' }
   ];
 
+  errorMessage: string | null = null; // <--- Agrega esta línea
+
   // Roles filtrados disponibles para el desplegable
   availableRoles: { label: string; value: UserFormModel['role'] }[] = [];
 

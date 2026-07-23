@@ -1,0 +1,272 @@
+/* Layout General de Pantalla Completa Estilo Dashboard */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #0f1715;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: #e2e8f0;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- BARRA LATERAL (SIDEBAR IZQUIERDA) --- */
+.sidebar {
+  width: 260px;
+  background-color: #111a18;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.5rem 1rem;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.sidebar-brand h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  padding-left: 0.5rem;
+  margin-bottom: 2rem;
+  letter-spacing: 0.05em;
+}
+
+.nav-category {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.1em;
+  margin: 1.5rem 0 0.5rem 0.5rem;
+  font-weight: 600;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex-grow: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #94a3b8;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.nav-item:hover, .nav-item.active {
+  background-color: rgba(217, 119, 6, 0.15);
+  color: #f59e0b;
+}
+
+.sidebar-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 1rem;
+}
+
+/* --- CONTENEDOR PRINCIPAL DERECHO --- */
+.main-content-wrapper {
+  margin-left: 260px;
+  width: calc(100% - 260px); /* Usar 100% en lugar de 100vw evita el desborde por el scroll */
+  display: flex;
+  flex-direction: column;
+  background-color: #0f1715;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* --- NAVBAR SUPERIOR --- */
+.top-navbar {
+  height: 80px;
+  background-color: #111a18;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  width: 100%;
+  box-sizing: border-box; /* Asegura que el padding no expanda el ancho */
+}
+
+/* Buscador de Acceso Rápido */
+.search-container {
+  position: relative;
+  width: 350px;
+}
+
+.search-input {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  color: #ffffff;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: #d97706;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+/* --- PERFIL DE USUARIO (Integrado sin margen flotante extraño) --- */
+.user-profile-badge {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.user-avatar {
+  font-size: 1rem;
+  background: rgba(217, 119, 6, 0.2);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(217, 119, 6, 0.4);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 0.8rem;
+  line-height: 1.1;
+}
+
+.user-role {
+  background-color: rgba(217, 119, 6, 0.2) !important;
+  color: #f59e0b !important;
+  font-size: 0.55rem;
+  font-weight: 600;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  letter-spacing: 0.03em;
+}
+
+/* --- ÁREA DE CONTENIDO --- */
+.dashboard-content {
+  padding: 2rem;
+  width: 100%;
+  box-sizing: border-box; /* Fuerza a que el padding se respete hacia adentro */
+}
+
+/* Grilla de KPIs Superiores (Separada de las secciones de abajo) */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.5rem !important; /* Espacio extra abajo para que no queden pegadas */
+}
+
+.kpi-card {
+  background: rgba(25, 35, 33, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 1.25rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.kpi-card:hover {
+  border-color: rgba(217, 119, 6, 0.3);
+  transform: translateY(-2px);
+}
+
+.kpi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.kpi-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+}
+
+.kpi-icon {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.kpi-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.kpi-sub {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 400;
+}
+
+/* Paneles Dinámicos con márgenes correctos */
+.placeholder-panel {
+  background: rgba(25, 35, 33, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 10px;
+}
+
+/* Títulos internos de los paneles con margen izquierdo correcto */
+.panel-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  margin-left: 0.25rem;
+  margin-bottom: 1rem !important;
+}
+
+.placeholder-box {
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+  background-color: rgba(15, 23, 21, 0.4);
+  border-radius: 10px;
+  color: #64748b;
+  min-height: 180px;
+  font-size: 0.9rem;
+  padding: 2rem;
+}   

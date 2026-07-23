@@ -1,112 +1,123 @@
-<div class="container mt-4">
-  <div class="header-section">
-    <div>
-      <h2>🏷️ Categorías y Tipos de Habitación</h2>
-      <p class="subtitle">Defina precios, capacidades y tarifas por noche</p>
-    </div>
+<div class="rooms-container">
+  <div class="rooms-card">
 
-    <div class="action-buttons">
-      <button class="btn btn-secondary" routerLink="/habitaciones">
-        ⬅️ Volver a Habitaciones
-      </button>
-      <button class="btn btn-primary" (click)="openCreateModal()">
-        ➕ Nueva Categoría
-      </button>
-    </div>
-  </div>
-
-  <!-- Alertas -->
-  <div *ngIf="successMessage" class="alert alert-success mt-3">
-    {{ successMessage }}
-  </div>
-
-  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
-    {{ errorMessage }}
-  </div>
-
-  <!-- Carga -->
-  <div *ngIf="isLoading && !showModal" class="text-center my-5">
-    <p>Cargando categorías...</p>
-  </div>
-
-  <!-- Tabla de Tipos de Habitación -->
-  <div *ngIf="!isLoading && roomTypes.length > 0" class="table-container mt-3">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Capacidad Máxima</th>
-          <th>Precio x Noche</th>
-          <th>Descripción</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let type of roomTypes">
-          <td class="fw-bold">
-            {{ type.name }}
-            <span *ngIf="type.name.toLowerCase() === 'basic'" class="badge-default">Por Defecto</span>
-          </td>
-          <td>👥 {{ type.capacity }} personas</td>
-          <td class="price-text">{{ type.pricePerNight | currency:'USD':'symbol':'1.2-2' }}</td>
-          <td class="desc-cell">{{ type.description }}</td>
-          <td class="actions-cell">
-            <button class="btn-icon btn-edit" (click)="openEditModal(type)" title="Editar Categoría">
-              ✏️
-            </button>
-            <button 
-              class="btn-icon btn-danger" 
-              [disabled]="type.name.toLowerCase() === 'basic'"
-              (click)="deleteType(type)" 
-              [title]="type.name.toLowerCase() === 'basic' ? 'El tipo Basic no se puede borrar' : 'Eliminar Categoría'">
-              🗑️
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Modal Formulario (Crear / Editar) -->
-  <div class="modal-backdrop" *ngIf="showModal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3>{{ isEditMode ? '✏️ Editar Categoría' : '➕ Nueva Categoría' }}</h3>
-        <button class="close-btn" (click)="closeModal()">✕</button>
+    <!-- Header / Título, Subtítulo y Botones -->
+    <div class="header-section">
+      <div>
+        <h2>🏷️ Categorías y Tipos de Habitación</h2>
+        <p class="subtitle">Defina precios, capacidades y tarifas por noche</p>
       </div>
 
-      <form [formGroup]="typeForm" (ngSubmit)="onSubmit()">
-        <div class="modal-body">
-          <div class="form-group mb-3">
-            <label class="form-label">Nombre de Categoría *</label>
-            <input type="text" class="form-control" formControlName="name" placeholder="Ej: Suite Deluxe, Matrimonial..." />
-          </div>
-
-          <div class="form-row mb-3">
-            <div class="form-group flex-1">
-              <label class="form-label">Capacidad (personas) *</label>
-              <input type="number" class="form-control" formControlName="capacity" min="1" />
-            </div>
-
-            <div class="form-group flex-1">
-              <label class="form-label">Precio por Noche ($) *</label>
-              <input type="number" class="form-control" formControlName="pricePerNight" min="0" step="0.01" />
-            </div>
-          </div>
-
-          <div class="form-group mb-3">
-            <label class="form-label">Descripción *</label>
-            <textarea class="form-control" formControlName="description" rows="3" placeholder="Detalles de camas, comodidades..."></textarea>
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
-          <button type="submit" class="btn btn-primary" [disabled]="typeForm.invalid">
-            {{ isEditMode ? 'Guardar Cambios' : 'Crear Categoría' }}
-          </button>
-        </div>
-      </form>
+      <div class="action-buttons">
+        <button class="btn btn-secondary" routerLink="/habitaciones">
+          ⬅️ Volver a Habitaciones
+        </button>
+        <button class="btn btn-primary" (click)="openCreateModal()">
+          ➕ Nueva Categoría
+        </button>
+      </div>
     </div>
+
+    <!-- Alertas -->
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Carga -->
+    <div *ngIf="isLoading && !showModal" class="loading-state">
+      <div class="spinner"></div>
+      <p>Cargando categorías...</p>
+    </div>
+
+    <!-- Tabla de Tipos de Habitación -->
+    <div *ngIf="!isLoading && roomTypes.length > 0" class="table-responsive">
+      <table class="rooms-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Capacidad Máxima</th>
+            <th>Precio x Noche</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let type of roomTypes">
+            <td class="room-number">
+              {{ type.name }}
+              <span *ngIf="type.name.toLowerCase() === 'basic'" class="badge-default">Por Defecto</span>
+            </td>
+            <td>👥 {{ type.capacity }} personas</td>
+            <td class="price-text">{{ type.pricePerNight | currency:'USD':'symbol':'1.2-2' }}</td>
+            <td class="desc-cell">{{ type.description }}</td>
+            <td class="actions-cell">
+              <button class="btn-icon btn-edit" (click)="openEditModal(type)" title="Editar Categoría">
+                ✏️
+              </button>
+              <button 
+                class="btn-icon btn-danger" 
+                [disabled]="type.name.toLowerCase() === 'basic'"
+                (click)="deleteType(type)" 
+                [title]="type.name.toLowerCase() === 'basic' ? 'El tipo Basic no se puede borrar' : 'Eliminar Categoría'">
+                🗑️
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Estado vacío -->
+    <div *ngIf="!isLoading && roomTypes.length === 0" class="empty-state">
+      <p>No hay categorías registradas actualmente.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal Formulario (Crear / Editar) -->
+<div class="modal-backdrop" *ngIf="showModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>{{ isEditMode ? '✏️ Editar Categoría' : '➕ Nueva Categoría' }}</h3>
+      <button class="close-btn" (click)="closeModal()">✕</button>
+    </div>
+
+    <form [formGroup]="typeForm" (ngSubmit)="onSubmit()">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Nombre de Categoría *</label>
+          <input type="text" class="form-control" formControlName="name" placeholder="Ej: Suite Deluxe, Matrimonial..." />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Capacidad (personas) *</label>
+            <input type="number" class="form-control" formControlName="capacity" min="1" />
+          </div>
+
+          <div class="form-group flex-1">
+            <label class="form-label">Precio por Noche ($) *</label>
+            <input type="number" class="form-control" formControlName="pricePerNight" min="0" step="0.01" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Descripción *</label>
+          <textarea class="form-control" formControlName="description" rows="3" placeholder="Detalles de camas, comodidades..."></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="typeForm.invalid">
+          {{ isEditMode ? 'Guardar Cambios' : 'Crear Categoría' }}
+        </button>
+      </div>
+    </form>
   </div>
 </div>
