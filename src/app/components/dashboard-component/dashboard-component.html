@@ -1,0 +1,34 @@
+<div class="dashboard-layout">
+  <!-- Barra Lateral (Sidebar) -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>Hotel Manager</h2>
+    </div>
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
+      <a routerLink="/dashboard/bookings" routerLinkActive="active">Reservas (Booking)</a>
+      <a routerLink="/dashboard/checkins" routerLinkActive="active">Check-ins</a>
+      <a routerLink="/dashboard/items" routerLinkActive="active">Items / Habitaciones</a>
+      <a routerLink="/dashboard/payments" routerLinkActive="active">Pagos</a>
+      <a routerLink="/dashboard/accounts" routerLinkActive="active">Cuentas</a>
+      <a routerLink="/dashboard/users" routerLinkActive="active">Usuarios</a>
+      <a routerLink="/dashboard/employees" routerLinkActive="active">Empleados</a>
+    </nav>
+    <div class="sidebar-footer">
+      <button (click)="logout()" class="btn-logout">Cerrar Sesión</button>
+    </div>
+  </aside>
+
+  <!-- Contenido Principal -->
+  <main class="main-content">
+    <header class="top-bar">
+      <h3>Panel de Administración</h3>
+      <span class="user-info">Bienvenido, Admin</span>
+    </header>
+    
+    <div class="content-area">
+      <!-- Aquí se renderizarán las vistas hijas de cada módulo -->
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
