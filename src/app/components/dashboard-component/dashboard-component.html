@@ -11,7 +11,7 @@
       <a routerLink="/dashboard/items" routerLinkActive="active">Items / Habitaciones</a>
       <a routerLink="/dashboard/payments" routerLinkActive="active">Pagos</a>
       <a routerLink="/dashboard/accounts" routerLinkActive="active">Cuentas</a>
-      <a routerLink="/dashboard/users" routerLinkActive="active">Usuarios</a>
+      <a routerLink="/dashboard/usuarios" routerLinkActive="active">Usuarios</a>
       <a routerLink="/dashboard/employees" routerLinkActive="active">Empleados</a>
     </nav>
     <div class="sidebar-footer">
@@ -23,7 +23,11 @@
   <main class="main-content">
     <header class="top-bar">
       <h3>Panel de Administración</h3>
-      <span class="user-info">Bienvenido, Admin</span>
+      <!-- Reemplazamos el texto estático por las variables dinámicas del TS -->
+      <span class="user-info">
+        Bienvenido, <strong>{{ username }}</strong> 
+        <span class="text-muted" *ngIf="userRoles">({{ userRoles }})</span>
+      </span>
     </header>
     
     <div class="content-area">
