@@ -1,0 +1,72 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Gestión de Reservas (Booking)</h2>
+    <button 
+      class="btn btn-primary" 
+      [routerLink]="canModify ? '/dashboard/bookings/nuevo' : null" 
+      [disabled]="!canModify">
+      Nueva Reserva
+    </button>
+  </div>
+  <hr>
+
+  <!-- Mensajes de carga o error -->
+  <div *ngIf="loading" class="alert alert-info">Cargando registros...</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <!-- Tabla de datos -->
+  <table *ngIf="!loading && !errorMessage && bookings.length > 0" class="table table-striped table-hover align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Titular</th>
+        <th>Teléfono</th>
+        <th>Habitación</th>
+        <th>Check-In</th>
+        <th>Check-Out</th>
+        <th>Huéspedes</th>
+        <th>Total</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let booking of bookings">
+        <td>{{ booking.id }}</td>
+        <td>{{ booking.guestFirstName }} {{ booking.guestLastName }}</td>
+        <td>{{ booking.guestPhone || '-' }}</td>
+        <td>
+          <span *ngIf="booking.room">#{{ booking.room.number }}</span>
+          <span *ngIf="!booking.room" class="text-muted">N/A</span>
+        </td>
+        <td>{{ booking.checkIn }}</td>
+        <td>{{ booking.checkOut }}</td>
+        <td>{{ booking.guestCount }}</td>
+        <td>${{ booking.totalPrice | number:'1.2-2' }}</td>
+        <td>
+          <span class="badge" [ngClass]="{
+            'bg-warning text-dark': booking.state === 'PENDING',
+            'bg-success': booking.state === 'CONFIRMED' || booking.state === 'CHECKED_IN',
+            'bg-secondary': booking.state === 'CONCLUDED',
+            'bg-danger': booking.state === 'CANCELLED' || booking.state === 'NO_SHOW'
+          }">
+            {{ booking.state }}
+          </span>
+        </td>
+        <td>
+          <button 
+            class="btn btn-danger btn-sm" 
+            (click)="cancelBookingPlaceholder(booking.id)" 
+            [disabled]="!canModify">
+            Cancelar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Mensaje si la lista está vacía -->
+  <div *ngIf="!loading && !errorMessage && bookings.length === 0" class="alert alert-warning">
+    No se encontraron reservas registradas en el sistema.
+  </div>
+</div>

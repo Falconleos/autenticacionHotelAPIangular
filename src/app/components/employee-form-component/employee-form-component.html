@@ -1,0 +1,92 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Nuevo Empleado</h2>
+    <button class="btn btn-secondary" routerLink="/dashboard/employees">Volver</button>
+  </div>
+  <hr>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <form (ngSubmit)="onSubmit()" #employeeForm="ngForm" class="row g-3">
+    
+    <!-- Datos de Usuario -->
+    <h4 class="text-primary mt-3">Información de Cuenta y Personal</h4>
+    
+    <div class="col-md-6">
+      <label for="username" class="form-label">Nombre de Usuario *</label>
+      <input type="text" class="form-control" id="username" name="username" [(ngModel)]="formData.username" required #username="ngModel">
+      <div *ngIf="username.invalid && (username.dirty || username.touched)" class="text-danger small">
+        El nombre de usuario es obligatorio.
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label for="password" class="form-label">Contraseña Temporal *</label>
+      <input type="password" class="form-control" id="password" name="password" [(ngModel)]="formData.password" required #password="ngModel">
+      <div *ngIf="password.invalid && (password.dirty || password.touched)" class="text-danger small">
+        La contraseña es obligatoria.
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <label for="name" class="form-label">Nombre *</label>
+      <input type="text" class="form-control" id="name" name="name" [(ngModel)]="formData.name" required minlength="3" maxlength="50" #name="ngModel">
+    </div>
+
+    <div class="col-md-6">
+      <label for="surname" class="form-label">Apellido *</label>
+      <input type="text" class="form-control" id="surname" name="surname" [(ngModel)]="formData.surname" required minlength="3" maxlength="50" #surname="ngModel">
+    </div>
+
+    <div class="col-md-4">
+      <label for="dni" class="form-label">DNI *</label>
+      <input type="text" class="form-control" id="dni" name="dni" [(ngModel)]="formData.dni" required pattern="\d{7,10}" #dni="ngModel">
+    </div>
+
+    <div class="col-md-4">
+      <label for="email" class="form-label">Correo Electrónico *</label>
+      <input type="email" class="form-control" id="email" name="email" [(ngModel)]="formData.email" required email #email="ngModel">
+    </div>
+
+    <div class="col-md-4">
+      <label for="phoneNumber" class="form-label">Teléfono *</label>
+      <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" [(ngModel)]="formData.phoneNumber" required #phone="ngModel">
+    </div>
+
+    <div class="col-md-6">
+      <label for="birthDay" class="form-label">Fecha de Nacimiento</label>
+      <input type="date" class="form-control" id="birthDay" name="birthDay" [(ngModel)]="formData.birthDay">
+    </div>
+
+    <div class="col-md-6">
+      <label for="role" class="form-label">Rol del Sistema *</label>
+      <select class="form-select" id="role" name="role" [(ngModel)]="formData.role" required>
+        <option *ngFor="let r of availableRoles" [value]="r">{{ r }}</option>
+      </select>
+    </div>
+
+    <!-- Datos Laborales (Empleado) -->
+    <h4 class="text-primary mt-4">Información Laboral</h4>
+
+    <div class="col-md-6">
+      <label for="shift" class="form-label">Turno *</label>
+      <select class="form-select" id="shift" name="shift" [(ngModel)]="formData.shift" required>
+        <option *ngFor="let s of availableShifts" [value]="s">{{ s }}</option>
+      </select>
+    </div>
+
+    <div class="col-md-6">
+      <label for="salary" class="form-label">Salario ($) *</label>
+      <input type="number" step="0.01" class="form-control" id="salary" name="salary" [(ngModel)]="formData.salary" required min="1" #salary="ngModel">
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="col-12 mt-4">
+      <button type="submit" class="btn btn-success me-2" [disabled]="employeeForm.invalid || loading">
+        {{ loading ? 'Guardando...' : 'Crear Empleado' }}
+      </button>
+      <button type="button" class="btn btn-secondary" routerLink="/dashboard/employees">Cancelar</button>
+    </div>
+
+  </form>
+</div>

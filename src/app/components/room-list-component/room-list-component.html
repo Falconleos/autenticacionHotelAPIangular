@@ -1,0 +1,68 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Gestión de Habitaciones</h2>
+    <button 
+      class="btn btn-primary" 
+      [routerLink]="isAdmin ? '/dashboard/rooms/nuevo' : null" 
+      [disabled]="!isAdmin">
+      Nueva Habitación
+    </button>
+  </div>
+  <hr>
+
+  <!-- Mensajes de carga o error -->
+  <div *ngIf="loading" class="alert alert-info">Cargando registros...</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <!-- Tabla de datos -->
+  <table *ngIf="!loading && !errorMessage && rooms.length > 0" class="table table-striped table-hover align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Nro. Habitación</th>
+        <th>Tipo</th>
+        <th>Capacidad</th>
+        <th>Precio por Noche</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let room of rooms">
+        <td>{{ room.id }}</td>
+        <td><strong>#{{ room.number }}</strong></td>
+        <td>{{ room.roomTypeName }}</td>
+        <td>{{ room.capacity }} pers.</td>
+        <td>${{ room.pricePerNight | number:'1.2-2' }}</td>
+        <td>
+          <span class="badge" [ngClass]="{
+            'bg-success': room.state === 'AVAILABLE',
+            'bg-danger': room.state === 'OCCUPIED',
+            'bg-warning text-dark': room.state === 'MAINTENANCE'
+          }">
+            {{ room.state }}
+          </span>
+        </td>
+        <td>
+          <button 
+            class="btn btn-warning btn-sm me-1" 
+            [routerLink]="isAdmin ? ['/dashboard/rooms/editar', room.id] : null" 
+            [disabled]="!isAdmin">
+            Editar
+          </button>
+          <button 
+            class="btn btn-danger btn-sm" 
+            (click)="deleteRoom(room.id)" 
+            [disabled]="!isAdmin">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Mensaje si la lista está vacía -->
+  <div *ngIf="!loading && !errorMessage && rooms.length === 0" class="alert alert-warning">
+    No se encontraron habitaciones registradas en el sistema.
+  </div>
+</div>

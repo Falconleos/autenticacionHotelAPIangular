@@ -1,32 +1,32 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { UserService } from '../../services/user-service';
-import { UserDtoResponse } from '../../models/user.model';
+import { BookingService } from '../../services/booking-service';
+import { BookingDtoResponse } from '../../models/booking.model';
 import { AuthService } from '../../services/auth-service';
 
 @Component({
-  selector: 'app-user-list',
+  selector: 'app-booking-list',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './user-list-component.html',
-  styleUrls: ['./user-list-component.css']
+  templateUrl: './booking-list-component.html',
+  styleUrls: ['./booking-list-component.css']
 })
-export class UserListComponent implements OnInit {
-  users: UserDtoResponse[] = [];
+export class BookingListComponent implements OnInit {
+  bookings: BookingDtoResponse[] = [];
   loading = true;
   errorMessage = '';
-  canModify = false;
+  canModify = false; // Permite acceso a Admin y Recepcionista
 
   constructor(
-    private userService: UserService,
+    private bookingService: BookingService,
     private authService: AuthService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.checkUserRole();
-    this.loadUsers();
+    this.loadBookings();
   }
 
   checkUserRole(): void {
@@ -51,24 +51,18 @@ export class UserListComponent implements OnInit {
     }
   }
 
-  loadUsers(): void {
+  loadBookings(): void {
     this.loading = true;
     this.errorMessage = '';
     
-    this.userService.getAll().subscribe({
+    this.bookingService.getAll().subscribe({
       next: (data) => {
-        const allUsers = Array.isArray(data) ? [...data] : [];
-        
-        // Filtramos para mantener únicamente a los usuarios que tengan el rol GUEST
-        this.users = allUsers.filter(user => 
-          user.roles && user.roles.some(role => role.name === 'GUEST')
-        );
-
+        this.bookings = Array.isArray(data) ? [...data] : [];
         this.loading = false;
         this.cdr.markForCheck();
       },
       error: (err) => {
-        this.errorMessage = 'No se pudieron cargar los usuarios o no cuentas con los permisos necesarios.';
+        this.errorMessage = 'No se pudieron cargar las reservas o no cuentas con los permisos necesarios.';
         this.loading = false;
         this.cdr.markForCheck();
         console.error(err);
@@ -76,23 +70,11 @@ export class UserListComponent implements OnInit {
     });
   }
 
-  deleteUser(id: number): void {
+  cancelBookingPlaceholder(id: number): void {
     if (!this.canModify) {
       alert('No tienes los permisos necesarios para realizar esta acción.');
       return;
     }
-
-    if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-      this.userService.deleteUser(id).subscribe({
-        next: () => {
-          this.users = this.users.filter(user => user.id !== id);
-          this.cdr.markForCheck();
-        },
-        error: (err) => {
-          alert('Error al eliminar el usuario.');
-          console.error(err);
-        }
-      });
-    }
+    alert(`Botón de cancelar presionado para la reserva ID: ${id}`);
   }
 }

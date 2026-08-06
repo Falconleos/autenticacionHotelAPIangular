@@ -7,8 +7,14 @@
     <nav class="sidebar-nav">
       <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
       <a routerLink="/dashboard/bookings" routerLinkActive="active">Reservas (Booking)</a>
-      <a routerLink="/dashboard/checkins" routerLinkActive="active">Check-ins</a>
-      <a routerLink="/dashboard/items" routerLinkActive="active">Items / Habitaciones</a>
+      <a routerLink="/dashboard/check-ins" routerLinkActive="active" class="nav-link">
+          Estadías (Check-Ins)
+      </a>
+      <!-- Menús separados -->
+      <a routerLink="/dashboard/rooms" routerLinkActive="active">Habitaciones</a>
+      <a routerLink="/dashboard/items" routerLinkActive="active">Items</a>
+      <a routerLink="/dashboard/comments" routerLinkActive="active">Comentarios</a> <!-- <--- Enlace agregado -->
+      <!-- Fin de menús separados -->
       <a routerLink="/dashboard/payments" routerLinkActive="active">Pagos</a>
       <a routerLink="/dashboard/accounts" routerLinkActive="active">Cuentas</a>
       <a routerLink="/dashboard/usuarios" routerLinkActive="active">Usuarios</a>
@@ -23,7 +29,6 @@
   <main class="main-content">
     <header class="top-bar">
       <h3>Panel de Administración</h3>
-      <!-- Reemplazamos el texto estático por las variables dinámicas del TS -->
       <span class="user-info">
         Bienvenido, <strong>{{ username }}</strong> 
         <span class="text-muted" *ngIf="userRoles">({{ userRoles }})</span>
@@ -31,7 +36,6 @@
     </header>
     
     <div class="content-area">
-      <!-- Aquí se renderizarán las vistas hijas de cada módulo -->
       <router-outlet></router-outlet>
     </div>
   </main>

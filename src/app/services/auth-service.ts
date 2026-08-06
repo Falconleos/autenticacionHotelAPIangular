@@ -18,4 +18,9 @@ export class AuthService {
   logout(): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/logout`, {}, { withCredentials: true });
   }
+
+  refreshToken(): Observable<AuthTokenResponse> {
+    return this.http.post<AuthTokenResponse>(`${this.apiUrl}/refresh`, {}, { withCredentials: true });
+  }
+
 }

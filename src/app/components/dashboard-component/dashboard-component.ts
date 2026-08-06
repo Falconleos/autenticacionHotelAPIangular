@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,7 +14,10 @@ export class DashboardComponent implements OnInit {
   username: string = 'Usuario';
   userRoles: string = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     const token = localStorage.getItem('authToken');
@@ -32,7 +36,17 @@ export class DashboardComponent implements OnInit {
   }
 
   logout(): void {
-    localStorage.removeItem('authToken');
-    this.router.navigate(['/login']);
+    this.authService.logout().subscribe({
+      next: () => {
+        localStorage.removeItem('authToken');
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        console.error('Error al cerrar sesión en el servidor:', err);
+        // Si falla la red, igual limpiamos y redirigimos por seguridad local
+        localStorage.removeItem('authToken');
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }

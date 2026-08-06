@@ -1,0 +1,68 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Gestión de Comentarios</h2>
+    <!-- Botón de nuevo comentario habilitado para ADMIN, RECEPCIONIST y GUEST -->
+    <button 
+      class="btn btn-primary" 
+      [routerLink]="canModify ? '/dashboard/comments/nuevo' : null" 
+      [disabled]="!canModify">
+      Nuevo Comentario
+    </button>
+  </div>
+  <hr>
+
+  <!-- Mensajes de carga o error -->
+  <div *ngIf="loading" class="alert alert-info">Cargando registros...</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <!-- Tabla de datos -->
+  <table *ngIf="!loading && !errorMessage && comments.length > 0" class="table table-striped table-hover align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Nombre y Apellido</th>
+        <th>Comentario / Contenido</th>
+        <th>Valoración</th>
+        <th>Nº Habitación</th>
+        <th>Período Check-in</th>
+        <th>Fecha Creación</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let comment of comments">
+        <td>{{ comment.id }}</td>
+        <td>
+          <span *ngIf="comment.user">{{ comment.user.name }} {{ comment.user.surname }}</span>
+          <span *ngIf="!comment.user" class="text-muted">-</span>
+        </td>
+        <td>{{ comment.content }}</td>
+        <td>
+          <span class="badge bg-warning text-dark">{{ comment.rating }} / 5</span>
+        </td>
+        <td>Estadía #{{ comment.checkInId }}</td>
+        <td>ID Estadía: {{ comment.checkInId }}</td>
+        <td>{{ comment.createdAt | date:'short' }}</td>
+        <td>
+          <button 
+            class="btn btn-warning btn-sm me-1" 
+            [routerLink]="canModify ? ['/dashboard/comments/editar', comment.id] : null" 
+            [disabled]="!canModify">
+            Editar
+          </button>
+          <button 
+            class="btn btn-danger btn-sm" 
+            (click)="deleteComment(comment.id)" 
+            [disabled]="!canModify">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Mensaje si la lista está vacía -->
+  <div *ngIf="!loading && !errorMessage && comments.length === 0" class="alert alert-warning">
+    No se encontraron comentarios registrados en el sistema.
+  </div>
+</div>

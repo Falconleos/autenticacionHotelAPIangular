@@ -1,0 +1,78 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Gestión de Empleados</h2>
+    <button 
+      class="btn btn-primary" 
+      [routerLink]="isAdmin ? '/dashboard/employees/nuevo' : null" 
+      [disabled]="!isAdmin">
+      Nuevo Empleado
+    </button>
+  </div>
+  <hr>
+
+  <!-- Mensajes de carga o error -->
+  <div *ngIf="loading" class="alert alert-info">Cargando registros...</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <!-- Tabla de datos -->
+  <table *ngIf="!loading && !errorMessage && employees.length > 0" class="table table-striped table-hover align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Nombre y Apellido</th>
+        <th>DNI</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Turno</th>
+        <th>Salario</th>
+        <th>Roles</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let emp of employees">
+        <td>{{ emp.id }}</td>
+        <td>{{ emp.user.username }}</td>
+        <td>{{ emp.user.name }} {{ emp.user.surname }}</td>
+        <td>{{ emp.user.dni }}</td>
+        <td>{{ emp.user.email }}</td>
+        <td>{{ emp.user.phoneNumber || '-' }}</td>
+        <td>
+          <span class="badge bg-info text-dark">{{ emp.shift }}</span>
+        </td>
+        <td>${{ emp.salary | number:'1.2-2' }}</td>
+        <td>
+          <span *ngFor="let role of emp.user.roles; let last = last" class="badge bg-secondary me-1">
+            {{ role.name }}{{ !last ? ', ' : '' }}
+          </span>
+        </td>
+        <td>
+          <span class="badge" [ngClass]="emp.user.enabled ? 'bg-success' : 'bg-danger'">
+            {{ emp.user.enabled ? 'Activo' : 'Inactivo' }}
+          </span>
+        </td>
+        <td>
+          <button 
+            class="btn btn-warning btn-sm me-1" 
+            [routerLink]="isAdmin ? ['/dashboard/employees/editar', emp.id] : null" 
+            [disabled]="!isAdmin">
+            Editar
+          </button>
+          <button 
+            class="btn btn-danger btn-sm" 
+            (click)="deleteEmployee(emp.id)" 
+            [disabled]="!isAdmin">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Mensaje si la lista está vacía -->
+  <div *ngIf="!loading && !errorMessage && employees.length === 0" class="alert alert-warning">
+    No se encontraron empleados registrados en el sistema.
+  </div>
+</div>

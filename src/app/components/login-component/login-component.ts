@@ -38,12 +38,26 @@ export class LoginComponent {
 
     this.authService.login(this.loginForm.value).pipe(
       finalize(() => {
-        this.loading = false; // Se ejecuta siempre: tanto si es exito como si da error (401)
+        this.loading = false;
         this.cdr.markForCheck();
       })
     ).subscribe({
       next: (response) => {
         localStorage.setItem('authToken', response.token);
+
+        // Decodificar el JWT para extraer los roles/autoridades
+        try {
+          const payloadBase64 = response.token.split('.')[1];
+          const decodedJson = atob(payloadBase64);
+          const decodedToken = JSON.parse(decodedJson);
+
+          // Spring Security suele guardar el rol en "role", "roles", "authorities" o "sub"
+          const roles = decodedToken.role || decodedToken.roles || decodedToken.authorities || [];
+          localStorage.setItem('role', JSON.stringify(roles));
+        } catch (e) {
+          console.error('Error al decodificar el token:', e);
+        }
+
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
