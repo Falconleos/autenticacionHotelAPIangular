@@ -2,10 +2,10 @@
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Gestión de Usuarios</h2>
     <button 
-      class="btn btn-primary" 
-      [routerLink]="canModify ? '/dashboard/usuarios/nuevo' : null" 
-      [disabled]="!canModify">
-      Nuevo Usuario
+        class="btn btn-primary" 
+        (click)="goToNewUser()" 
+        [disabled]="!canModify">
+        Nuevo Usuario
     </button>
   </div>
   <hr>

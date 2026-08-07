@@ -2,13 +2,14 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login-component/login-component';
 import { DashboardComponent } from './components/dashboard-component/dashboard-component';
 import { UserListComponent } from './components/user-list-component/user-list-component';
+import { UserFormComponent } from './components/user-form-component/user-form-component'; // <--- 1. Importar el componente de usuario nuevo
 import { RoomListComponent } from './components/room-list-component/room-list-component';
 import { RoomTypeFormComponent } from './components/room-type-form-component/room-type-form-component';
 import { EmployeeListComponent } from './components/employee-list-component/employee-list-component';
 import { EmployeeFormComponent } from './components/employee-form-component/employee-form-component';
 import { BookingListComponent } from './components/booking-list-component/booking-list-component';
 import { AvailabilityComponent } from './components/availability-component/availability-component';
-import { BookingFormComponent } from './components/booking-form-component/booking-form-component'; // <--- Importar
+import { BookingFormComponent } from './components/booking-form-component/booking-form-component';
 import { CheckInListComponent } from './components/check-in-list-component/check-in-list-component';
 import { ItemListComponent } from './components/item-list-component/item-list-component';
 import { CommentListComponent } from './components/comment-list-component/comment-list-component';
@@ -25,6 +26,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'usuarios', component: UserListComponent },
+      { path: 'usuarios/nuevo', component: UserFormComponent }, // <--- 2. Ruta corregida (sin repetir 'dashboard/')
       { path: 'rooms', component: RoomListComponent },
       { path: 'rooms/nuevo', component: RoomFormComponent },
       { path: 'room-types/nuevo', component: RoomTypeFormComponent },
@@ -33,12 +35,12 @@ export const routes: Routes = [
       { path: 'employees/nuevo', component: EmployeeFormComponent },
       { path: 'bookings', component: BookingListComponent },
       { path: 'bookings/disponibilidad', component: AvailabilityComponent },
-      { path: 'bookings/nuevo', component: BookingFormComponent }, // <--- Agregar ruta para el formulario
+      { path: 'bookings/nuevo', component: BookingFormComponent },
       { path: 'check-ins', component: CheckInListComponent },
       { path: 'items', component: ItemListComponent },
       { path: 'comments', component: CommentListComponent },
       { path: 'accounts', component: AccountListComponent },
-      { path: 'payments', component: PaymentListComponent },
+      { path: 'payments', component: PaymentListComponent }
     ]
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
