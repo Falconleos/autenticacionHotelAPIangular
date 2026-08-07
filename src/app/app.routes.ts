@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login-component/login-component';
 import { DashboardComponent } from './components/dashboard-component/dashboard-component';
 import { UserListComponent } from './components/user-list-component/user-list-component';
-import { UserFormComponent } from './components/user-form-component/user-form-component'; // <--- 1. Importar el componente de usuario nuevo
+import { UserFormComponent } from './components/user-form-component/user-form-component';
 import { RoomListComponent } from './components/room-list-component/room-list-component';
 import { RoomTypeFormComponent } from './components/room-type-form-component/room-type-form-component';
 import { EmployeeListComponent } from './components/employee-list-component/employee-list-component';
@@ -11,6 +11,7 @@ import { BookingListComponent } from './components/booking-list-component/bookin
 import { AvailabilityComponent } from './components/availability-component/availability-component';
 import { BookingFormComponent } from './components/booking-form-component/booking-form-component';
 import { CheckInListComponent } from './components/check-in-list-component/check-in-list-component';
+import { CheckInCreateComponent } from './components/check-in-create-component/check-in-create-component'; // <--- 1. Importar el componente de nuevo check-in
 import { ItemListComponent } from './components/item-list-component/item-list-component';
 import { CommentListComponent } from './components/comment-list-component/comment-list-component';
 import { AccountListComponent } from './components/account-list-component/account-list-component';
@@ -26,7 +27,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'usuarios', component: UserListComponent },
-      { path: 'usuarios/nuevo', component: UserFormComponent }, // <--- 2. Ruta corregida (sin repetir 'dashboard/')
+      { path: 'usuarios/nuevo', component: UserFormComponent },
       { path: 'rooms', component: RoomListComponent },
       { path: 'rooms/nuevo', component: RoomFormComponent },
       { path: 'room-types/nuevo', component: RoomTypeFormComponent },
@@ -37,6 +38,7 @@ export const routes: Routes = [
       { path: 'bookings/disponibilidad', component: AvailabilityComponent },
       { path: 'bookings/nuevo', component: BookingFormComponent },
       { path: 'check-ins', component: CheckInListComponent },
+      { path: 'check-ins/nuevo', component: CheckInCreateComponent }, // <--- 2. Ruta para el formulario de check-in
       { path: 'items', component: ItemListComponent },
       { path: 'comments', component: CommentListComponent },
       { path: 'accounts', component: AccountListComponent },
