@@ -2,7 +2,9 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { RoomService } from '../../services/room-service';
+import { RoomTypeService } from '../../services/room-type-service'; // Asegúrate de tener este servicio creado
 import { RoomDtoResponse } from '../../models/room.model';
+import { RoomTypeDTOResponse } from '../../models/room-type.model'; // Asegúrate de tener este modelo creado
 import { AuthService } from '../../services/auth-service';
 
 @Component({
@@ -14,12 +16,16 @@ import { AuthService } from '../../services/auth-service';
 })
 export class RoomListComponent implements OnInit {
   rooms: RoomDtoResponse[] = [];
+  roomTypes: RoomTypeDTOResponse[] = [];
   loading = true;
+  loadingTypes = true;
   errorMessage = '';
+  errorTypesMessage = '';
   isAdmin = false;
 
   constructor(
     private roomService: RoomService,
+    private roomTypeService: RoomTypeService,
     private authService: AuthService,
     private cdr: ChangeDetectorRef
   ) {}
@@ -27,6 +33,7 @@ export class RoomListComponent implements OnInit {
   ngOnInit(): void {
     this.checkUserRole();
     this.loadRooms();
+    this.loadRoomTypes();
   }
 
   checkUserRole(): void {
@@ -70,6 +77,25 @@ export class RoomListComponent implements OnInit {
     });
   }
 
+  loadRoomTypes(): void {
+    this.loadingTypes = true;
+    this.errorTypesMessage = '';
+
+    this.roomTypeService.getAll().subscribe({
+      next: (data) => {
+        this.roomTypes = Array.isArray(data) ? [...data] : [];
+        this.loadingTypes = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.errorTypesMessage = 'No se pudieron cargar los tipos de habitación.';
+        this.loadingTypes = false;
+        this.cdr.markForCheck();
+        console.error(err);
+      }
+    });
+  }
+
   deleteRoom(id: number): void {
     if (!this.isAdmin) {
       alert('No tienes permisos de Administrador para realizar esta acción.');
@@ -84,6 +110,26 @@ export class RoomListComponent implements OnInit {
         },
         error: (err) => {
           alert('Error al eliminar la habitación. Recuerda que no se puede eliminar si su estado es OCCUPIED o requiere rol ADMIN.');
+          console.error(err);
+        }
+      });
+    }
+  }
+
+  deleteRoomType(id: number): void {
+    if (!this.isAdmin) {
+      alert('No tienes permisos de Administrador para realizar esta acción.');
+      return;
+    }
+
+    if (confirm('¿Estás seguro de que deseas eliminar este tipo de habitación?')) {
+      this.roomTypeService.deleteRoomType(id).subscribe({
+        next: () => {
+          this.roomTypes = this.roomTypes.filter(type => type.id !== id);
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          alert('Error al eliminar el tipo de habitación. Asegúrate de que no tenga habitaciones activas asociadas.');
           console.error(err);
         }
       });
