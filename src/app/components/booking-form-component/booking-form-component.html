@@ -1,0 +1,47 @@
+<div class="container mt-4">
+  <h2>Completar Datos de la Reserva</h2>
+  <hr>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <!-- Resumen de selección previa -->
+  <div class="card mb-4 bg-light shadow-sm" *ngIf="bookingData">
+    <div class="card-body">
+      <h5 class="card-title text-primary">Detalles de la Selección</h5>
+      <p class="mb-1"><strong>Habitación Nro:</strong> #{{ bookingData.room.number }} ({{ bookingData.room.roomTypeName }})</p>
+      <p class="mb-1"><strong>Check-In:</strong> {{ bookingData.checkIn }} | <strong>Check-Out:</strong> {{ bookingData.checkOut }}</p>
+      <p class="mb-0"><strong>Huéspedes:</strong> {{ bookingData.guestCount }}</p>
+    </div>
+  </div>
+
+  <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()" class="row g-3">
+    <div class="col-md-6">
+      <label for="guestFirstName" class="form-label">Nombre del Titular</label>
+      <input type="text" id="guestFirstName" class="form-control" formControlName="guestFirstName" placeholder="Ej: Juan">
+    </div>
+
+    <div class="col-md-6">
+      <label for="guestLastName" class="form-label">Apellido del Titular</label>
+      <input type="text" id="guestLastName" class="form-control" formControlName="guestLastName" placeholder="Ej: Pérez">
+    </div>
+
+    <div class="col-md-6">
+      <label for="guestPhone" class="form-label">Teléfono de Contacto</label>
+      <input type="text" id="guestPhone" class="form-control" formControlName="guestPhone" placeholder="Ej: +5492231234567">
+    </div>
+
+    <div class="col-12">
+      <label for="observation" class="form-label">Observaciones (Opcional)</label>
+      <textarea id="observation" class="form-control" formControlName="observation" rows="3" placeholder="Aclaraciones o pedidos especiales..."></textarea>
+    </div>
+
+    <div class="col-12 d-flex justify-content-between align-items-center mt-4">
+      <button type="button" class="btn btn-secondary" routerLink="/dashboard/bookings/disponibilidad">
+        Volver a Disponibilidad
+      </button>
+      <button type="submit" class="btn btn-success" [disabled]="bookingForm.invalid || loading">
+        {{ loading ? 'Guardando...' : 'Confirmar Creación de Reserva' }}
+      </button>
+    </div>
+  </form>
+</div>

@@ -77,4 +77,9 @@ export class BookingListComponent implements OnInit {
     }
     alert(`Botón de cancelar presionado para la reserva ID: ${id}`);
   }
+
+  confirmBookingPlaceholder(id: number): void {
+    console.log(`Función de confirmar reserva para el ID: ${id} (Próximamente)`);
+    alert(`[Modo Mock] Se seleccionó confirmar la reserva con ID: ${id}`);
+  }
 }

@@ -3,9 +3,9 @@
     <h2>Gestión de Reservas (Booking)</h2>
     <button 
       class="btn btn-primary" 
-      [routerLink]="canModify ? '/dashboard/bookings/nuevo' : null" 
+      [routerLink]="canModify ? '/dashboard/bookings/disponibilidad' : null" 
       [disabled]="!canModify">
-      Nueva Reserva
+      Consultar Disponibilidad
     </button>
   </div>
   <hr>
@@ -54,12 +54,20 @@
           </span>
         </td>
         <td>
-          <button 
-            class="btn btn-danger btn-sm" 
-            (click)="cancelBookingPlaceholder(booking.id)" 
-            [disabled]="!canModify">
-            Cancelar
-          </button>
+          <div class="d-flex gap-1">
+            <button 
+              class="btn btn-success btn-sm" 
+              (click)="confirmBookingPlaceholder(booking.id)" 
+              [disabled]="!canModify">
+              Confirmar
+            </button>
+            <button 
+              class="btn btn-danger btn-sm" 
+              (click)="cancelBookingPlaceholder(booking.id)" 
+              [disabled]="!canModify">
+              Cancelar
+            </button>
+          </div>
         </td>
       </tr>
     </tbody>
