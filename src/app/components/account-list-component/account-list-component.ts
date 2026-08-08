@@ -1,18 +1,17 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { AccountService } from '../../services/account-service';
-import { AccountDtoResponse } from '../../models/account.model';
+import { AccountDTOResponse } from '../../models/account.model';
 
 @Component({
   selector: 'app-account-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule], // Quitamos RouterLink si no se usa
   templateUrl: './account-list-component.html',
   styleUrls: ['./account-list-component.css']
 })
 export class AccountListComponent implements OnInit {
-  accounts: AccountDtoResponse[] = [];
+  accounts: AccountDTOResponse[] = [];
   loading = true;
   errorMessage = '';
 
@@ -30,12 +29,12 @@ export class AccountListComponent implements OnInit {
     this.errorMessage = '';
     
     this.accountService.getAllAccounts().subscribe({
-      next: (data) => {
+      next: (data: AccountDTOResponse[]) => {
         this.accounts = Array.isArray(data) ? [...data] : [];
         this.loading = false;
-        this.cdr.markForCheck(); // Fuerza la actualización de la vista
+        this.cdr.markForCheck();
       },
-      error: (err) => {
+      error: (err: any) => {
         this.errorMessage = 'No se pudieron cargar las cuentas o no cuentas con los permisos necesarios.';
         this.loading = false;
         this.cdr.markForCheck();
@@ -44,7 +43,6 @@ export class AccountListComponent implements OnInit {
     });
   }
 
-  // Métodos sin funcionalidad por el momento tal como solicitaste
   openAddPaymentModal(accountId: number): void {
     alert('Funcionalidad de agregar pago próximamente.');
   }

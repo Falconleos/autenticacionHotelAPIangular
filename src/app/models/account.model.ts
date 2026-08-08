@@ -1,18 +1,22 @@
-import { PaymentDtoResponse } from './payment.model';
-import { UserDtoResponse } from './user.model';
-
-export interface AccountDtoResponse {
+export interface AccountDTOResponse {
   id: number;
   checkInId: number;
   totalAmount: number;
   paidAmount: number;
-  remainingBalance: number;
+  remainingBalance?: number;
   isPaid: boolean;
-  payments: PaymentDtoResponse[];
-
-  // Propiedades complementarias de la estadía/check-in para mostrar en la vista
-  user?: UserDtoResponse;
-  roomNumber?: number;
+  payments: any[]; // O tu interfaz de pago correspondiente
+  user?: {
+    name: string;
+    surname: string;
+    dni: string;
+  };
+  roomNumber?: string | number;
   checkInDate?: string;
   checkOutDate?: string;
+  items?: {
+    description: string;
+    quantity: number;
+    subtotal: number;
+  }[];
 }

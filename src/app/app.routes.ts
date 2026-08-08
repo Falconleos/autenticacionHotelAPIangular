@@ -11,12 +11,16 @@ import { BookingListComponent } from './components/booking-list-component/bookin
 import { AvailabilityComponent } from './components/availability-component/availability-component';
 import { BookingFormComponent } from './components/booking-form-component/booking-form-component';
 import { CheckInListComponent } from './components/check-in-list-component/check-in-list-component';
-import { CheckInCreateComponent } from './components/check-in-create-component/check-in-create-component'; // <--- 1. Importar el componente de nuevo check-in
+import { CheckInCreateComponent } from './components/check-in-create-component/check-in-create-component';
 import { ItemListComponent } from './components/item-list-component/item-list-component';
+import { ItemFormComponent } from './components/item-form-component/item-form-component';
 import { CommentListComponent } from './components/comment-list-component/comment-list-component';
 import { AccountListComponent } from './components/account-list-component/account-list-component';
 import { PaymentListComponent } from './components/payment-list-component/payment-list-component';
 import { RoomFormComponent } from './components/room-form-component/room-form-component';
+import { RoomAttentionListComponent } from './components/room-attention-list-component/room-attention-list-component'; // <--- 1. Importar el componente de servicios de estadía
+import { RoomAttentionFormComponent } from './components/room-attention-form-component/room-attention-form-component';
+import { AccountDetailComponent } from './components/account-detail-component/account-detail-component';
 import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
@@ -38,11 +42,17 @@ export const routes: Routes = [
       { path: 'bookings/disponibilidad', component: AvailabilityComponent },
       { path: 'bookings/nuevo', component: BookingFormComponent },
       { path: 'check-ins', component: CheckInListComponent },
-      { path: 'check-ins/nuevo', component: CheckInCreateComponent }, // <--- 2. Ruta para el formulario de check-in
+      { path: 'check-ins/nuevo', component: CheckInCreateComponent },
+      { path: 'check-ins/:checkInId/servicios', component: RoomAttentionListComponent }, // <--- 2. Ruta para gestionar los servicios de un check-in específico
       { path: 'items', component: ItemListComponent },
+      { path: 'items/nuevo', component: ItemFormComponent },      
+      { path: 'items/editar/:id', component: ItemFormComponent }, 
       { path: 'comments', component: CommentListComponent },
       { path: 'accounts', component: AccountListComponent },
-      { path: 'payments', component: PaymentListComponent }
+      { path: 'payments', component: PaymentListComponent },
+      { path: 'check-ins/:checkInId/cuenta', component: AccountDetailComponent },
+      { path: 'check-ins/:checkInId/servicios', component: RoomAttentionListComponent },
+      { path: 'check-ins/:checkInId/servicios/nuevo', component: RoomAttentionFormComponent },
     ]
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },

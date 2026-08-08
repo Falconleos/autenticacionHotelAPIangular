@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CheckInService } from '../../services/check-in-service';
-import { UserService } from '../../services/user-service'; // Asegúrate que la ruta sea correcta
+import { UserService } from '../../services/user-service';
+import { BookingDtoResponse } from '../../models/booking.model';
 
 @Component({
   selector: 'app-check-in-create',
@@ -20,6 +21,9 @@ export class CheckInCreateComponent implements OnInit {
   guests: any[] = [];
   checkInDate: string = '';
   checkOutDate: string = '';
+  roomNumber: string | number = '';
+  roomTypeName: string = '';
+  totalPrice: number | null = null;
 
   loading = false;
   errorMessage = '';
@@ -29,16 +33,22 @@ export class CheckInCreateComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private checkInService: CheckInService,
-    private userService: UserService
+    private userService: UserService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    console.log('Iniciando componente CheckInCreateComponent');
     this.loadUsers();
 
     this.route.queryParams.subscribe(params => {
+      console.log('Parámetros de URL recibidos:', params);
       if (params['bookingId']) {
         this.bookingId = +params['bookingId'];
+        console.log('BookingID detectado:', this.bookingId);
         this.loadBookingDetails(this.bookingId);
+      } else {
+        console.warn('No se encontró el parámetro bookingId en la URL');
       }
       if (params['userId']) {
         this.userId = +params['userId'];
@@ -49,31 +59,60 @@ export class CheckInCreateComponent implements OnInit {
   loadUsers(): void {
     this.userService.getAll().subscribe({
       next: (users: any[]) => {
-        this.guests = Array.isArray(users) ? users : [];
+        console.log('Usuarios crudos recibidos del backend:', users);
+        
+        this.guests = Array.isArray(users) ? users.filter(user => {
+          if (!user.roles || !Array.isArray(user.roles)) return false;
+          
+          return user.roles.some((role: any) => {
+            if (typeof role === 'string') {
+              return role.toUpperCase().includes('GUEST');
+            }
+            return (
+              (role.name && role.name.toUpperCase().includes('GUEST')) ||
+              (role.authority && role.authority.toUpperCase().includes('GUEST')) ||
+              (role.roleName && role.roleName.toUpperCase().includes('GUEST'))
+            );
+          });
+        }) : [];
+
+        console.log('Usuarios filtrados (huéspedes):', this.guests);
+        this.cdr.markForCheck();
       },
       error: (err: any) => {
         console.error('Error al cargar la lista de usuarios', err);
         this.errorMessage = 'No se pudo cargar la lista de usuarios desde el servidor.';
+        this.cdr.markForCheck();
       }
     });
   }
 
   loadBookingDetails(id: number): void {
+    console.log('Ejecutando peticion GET para la reserva ID:', id);
     this.checkInService.getBookingById(id).subscribe({
       next: (booking: any) => {
+        console.log('Respuesta cruda del backend para la reserva:', booking);
         if (booking) {
-          this.checkInDate = booking.checkInDate || booking.checkIn || booking.startDate || '';
-          this.checkOutDate = booking.checkOutDate || booking.checkOut || booking.endDate || '';
-          
-          if (!this.userId && booking.user?.id) {
-            this.userId = booking.user.id;
-            this.selectedGuestName = `${booking.user.name || ''} ${booking.user.surname || ''}`;
+          this.checkInDate = booking.checkIn || '';
+          this.checkOutDate = booking.checkOut || '';
+          this.totalPrice = booking.totalPrice ?? null;
+
+          if (booking.room) {
+            this.roomNumber = booking.room.number || '';
+            this.roomTypeName = booking.room.roomTypeName || '';
           }
+          
+          if (booking.guestFirstName || booking.guestLastName) {
+            this.selectedGuestName = `${booking.guestFirstName || ''} ${booking.guestLastName || ''}`.trim();
+          }
+
+          this.cdr.markForCheck();
         }
       },
       error: (err: any) => {
-        console.error('No se pudieron cargar los detalles de la reserva', err);
+        console.error('Error detallado en la petición HTTP:', err);
         this.errorMessage = 'Error al obtener los datos de la reserva.';
+        this.cdr.markForCheck();
       }
     });
   }
@@ -81,6 +120,7 @@ export class CheckInCreateComponent implements OnInit {
   selectGuest(guest: any): void {
     this.userId = guest.id;
     this.selectedGuestName = `${guest.name || ''} ${guest.surname || ''}`;
+    this.cdr.markForCheck();
   }
 
   onSubmit(): void {
@@ -101,6 +141,7 @@ export class CheckInCreateComponent implements OnInit {
       next: () => {
         this.loading = false;
         this.successMessage = '¡Check-In registrado con éxito!';
+        this.cdr.markForCheck();
         setTimeout(() => {
           this.router.navigate(['/dashboard/check-ins']);
         }, 1500);
@@ -108,6 +149,7 @@ export class CheckInCreateComponent implements OnInit {
       error: (err: any) => {
         this.loading = false;
         this.errorMessage = 'Error al registrar el Check-In en el servidor.';
+        this.cdr.markForCheck();
         console.error(err);
       }
     });

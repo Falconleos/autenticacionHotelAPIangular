@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, map } from 'rxjs';
 import { AccountService } from './account-service';
-import { PaymentDtoResponse } from '../models/payment.model';
+import { PaymentDTOResponse } from '../models/payment.model';
+import { AccountDTOResponse } from '../models/account.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,25 +11,17 @@ export class PaymentService {
 
   constructor(private accountService: AccountService) {}
 
-  // Obtiene todos los pagos de todas las cuentas, enriqueciéndolos con los datos del usuario
-  getAllPayments(): Observable<PaymentDtoResponse[]> {
+  getAllPayments(): Observable<PaymentDTOResponse[]> {
     return this.accountService.getAllAccounts().pipe(
-      map(accounts => {
-        let allPayments: PaymentDtoResponse[] = [];
-        
-        accounts.forEach(account => {
-          if (account.payments && account.payments.length > 0) {
-            account.payments.forEach(payment => {
-              allPayments.push({
-                ...payment,
-                accountId: account.id,
-                userName: account.user?.name,
-                userSurname: account.user?.surname
-              });
+      map((accounts: AccountDTOResponse[]) => {
+        const allPayments: PaymentDTOResponse[] = [];
+        accounts.forEach((account: AccountDTOResponse) => {
+          if (account.payments) {
+            account.payments.forEach((payment: PaymentDTOResponse) => {
+              allPayments.push(payment);
             });
           }
         });
-        
         return allPayments;
       })
     );

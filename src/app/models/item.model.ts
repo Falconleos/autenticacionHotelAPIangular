@@ -3,11 +3,12 @@ export interface ItemDtoResponse {
   description: string;
   quantity: number;
   unitPrice: number;
-  subtotal: number;
+  isService?: boolean;
 }
 
 export interface ItemDtoRequest {
   description: string;
   quantity: number;
   unitPrice: number;
+  isService?: boolean;
 }

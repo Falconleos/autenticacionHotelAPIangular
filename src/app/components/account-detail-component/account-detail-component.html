@@ -1,0 +1,120 @@
+<div class="container mt-4" *ngIf="!loading && account">
+  <h2>Resumen de Cuenta - Check-In #{{ checkInId }}</h2>
+  <hr>
+
+  <!-- Mensaje de error si ocurre -->
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <div class="row">
+    <!-- Columna Izquierda: Desglose y Totales -->
+    <div class="col-md-7">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-dark text-white">Desglose de Cargos</div>
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Concepto</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Estadía base y servicios iniciales</td>
+                <td>${{ account.totalAmount | number:'1.2-2' }}</td>
+              </tr>
+              <!-- Si hay ítems adicionales en la cuenta -->
+              <tr *ngFor="let item of account.items">
+                <td>{{ item.description }} (x{{ item.quantity }})</td>
+                <td>${{ item.subtotal | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <hr>
+
+          <!-- Controles de Descuento y Recargo -->
+          <div class="row g-3 mb-3">
+            <div class="col-6">
+              <label class="form-label">Recargo (%)</label>
+              <input type="number" class="form-control" [(ngModel)]="surchargePercent" min="0">
+            </div>
+            <div class="col-6">
+              <label class="form-label">Descuento (%)</label>
+              <input type="number" class="form-control" [(ngModel)]="discountPercent" min="0">
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <h5>Total General Ajustado:</h5>
+            <h4 class="text-primary">${{ calculateAdjustedTotal() | number:'1.2-2' }}</h4>
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="text-muted">Restante a pagar:</span>
+            <h4 [ngClass]="calculateRemaining() === 0 ? 'text-success' : 'text-danger'">
+              ${{ calculateRemaining() | number:'1.2-2' }}
+            </h4>
+          </div>
+          <div class="mt-2">
+            <span class="badge" [ngClass]="account.isPaid ? 'bg-success' : 'bg-warning text-dark'">
+              Estado de la cuenta: {{ account.isPaid ? 'Pagada (Paid: true)' : 'Pendiente' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historial de Pagos -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-secondary text-white">Historial de Pagos</div>
+        <div class="card-body">
+          <ul class="list-group" *ngIf="account.payments && account.payments.length > 0; else noPayments">
+            <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let p of account.payments">
+              <div>
+                <strong>${{ p.amount | number:'1.2-2' }}</strong> - <span class="badge bg-info">{{ p.paymentMethod }}</span>
+                <br><small class="text-muted">{{ p.paymentDate }} | Ref: {{ p.transactionReference }}</small>
+              </div>
+            </li>
+          </ul>
+          <ng-template #noPayments>
+            <p class="text-muted mb-0">No hay pagos registrados todavía.</p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna Derecha: Formulario para Agregar Pago -->
+    <div class="col-md-5">
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">Registrar Pago</div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label">Monto a Pagar ($)</label>
+            <input type="number" class="form-control" [(ngModel)]="paymentAmount">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Método de Pago</label>
+            <select class="form-select" [(ngModel)]="paymentMethod">
+              <option value="CASH">Efectivo</option>
+              <option value="CREDIT_CARD">Tarjeta de Crédito</option>
+              <option value="DEBIT_CARD">Tarjeta de Débito</option>
+              <option value="TRANSFER">Transferencia</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Referencia / Comprobante</label>
+            <input type="text" class="form-control" [(ngModel)]="transactionReference" placeholder="Ej: Transacción #1234">
+          </div>
+          <button class="btn btn-success w-100" (click)="submitPayment()" [disabled]="calculateRemaining() === 0">
+            Procesar Pago
+          </button>
+        </div>
+      </div>
+      <button class="btn btn-outline-secondary w-100 mt-3" (click)="goBack()">Volver a Check-Ins</button>
+    </div>
+  </div>
+</div>
+
+<!-- Indicador de Carga Inicial -->
+<div *ngIf="loading" class="container mt-4">
+  <div class="alert alert-info">Cargando detalles de la cuenta...</div>
+</div>

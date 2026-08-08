@@ -115,10 +115,10 @@ export class CheckInListComponent implements OnInit {
   }
 
   viewAccountPlaceholder(id: number): void {
-    alert(`Acción "Ver cuenta" presionada para la estadía ID: ${id}`);
+    this.router.navigate([`/dashboard/check-ins/${id}/cuenta`]);
   }
 
   servicesPlaceholder(id: number): void {
-    alert(`Acción "Servicios" presionada para la estadía ID: ${id}`);
+    this.router.navigate([`/dashboard/check-ins/${id}/servicios`]);
   }
 }

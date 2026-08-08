@@ -15,6 +15,18 @@ export class ItemService {
     return this.http.get<ItemDtoResponse[]>(this.apiUrl, { withCredentials: true });
   }
 
+  getById(id: number): Observable<ItemDtoResponse> {
+    return this.http.get<ItemDtoResponse>(`${this.apiUrl}/${id}`, { withCredentials: true });
+  }
+
+  createItem(request: ItemDtoRequest): Observable<ItemDtoResponse> {
+    return this.http.post<ItemDtoResponse>(this.apiUrl, request, { withCredentials: true });
+  }
+
+  updateItem(id: number, request: ItemDtoRequest): Observable<ItemDtoResponse> {
+    return this.http.put<ItemDtoResponse>(`${this.apiUrl}/${id}`, request, { withCredentials: true });
+  }
+
   deleteItem(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { withCredentials: true });
   }

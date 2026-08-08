@@ -1,0 +1,54 @@
+<div class="container mt-4 mb-5" style="max-width: 600px;">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Registrar Consumo o Servicio</h2>
+    <button class="btn btn-secondary" [routerLink]="['/dashboard/check-ins', checkInId, 'servicios']">Volver</button>
+  </div>
+  <hr>
+
+  <div *ngIf="loadingItems" class="alert alert-info">Cargando catálogo...</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <form *ngIf="!loadingItems && !errorMessage" (ngSubmit)="onSubmit()">
+    
+    <!-- Selección del Ítem / Servicio -->
+    <div class="mb-3">
+      <label for="itemSelect" class="form-label fw-bold">Seleccionar Ítem o Servicio:</label>
+      <select id="itemSelect" class="form-select" [(ngModel)]="selectedItem" name="selectedItem" (change)="onItemChange()" required>
+        <option [ngValue]="null" disabled>-- Elige una opción del catálogo --</option>
+        <option *ngFor="let item of availableItems" [ngValue]="item">
+          {{ item.description || item.name }} - ${{ item.price || item.unitPrice | number:'1.2-2' }} 
+          ({{ item.isService ? 'Servicio' : 'Ítem' }})
+        </option>
+      </select>
+    </div>
+
+    <!-- Cantidad (Solo se muestra si NO es un servicio) -->
+    <div class="mb-3" *ngIf="selectedItem && !selectedItem.isService">
+      <label for="quantityInput" class="form-label fw-bold">Cantidad:</label>
+      <input type="number" id="quantityInput" class="form-control" [(ngModel)]="quantity" name="quantity" min="1" required>
+    </div>
+
+    <!-- Indicador visual si es Servicio (Cantidad fija a 1) -->
+    <div class="mb-3 alert alert-secondary" *ngIf="selectedItem && selectedItem.isService">
+      <small class="mb-0">Este elemento es un <strong>servicio</strong>. Se registrará con cantidad única (1).</small>
+    </div>
+
+    <!-- Resumen de Subtotal -->
+    <div class="card bg-light mb-4" *ngIf="selectedItem">
+      <div class="card-body">
+        <h5 class="card-title text-secondary">Resumen del Cargo</h5>
+        <p class="mb-1"><strong>Precio Unitario:</strong> ${{ (selectedItem.price || selectedItem.unitPrice) | number:'1.2-2' }}</p>
+        <p class="mb-0 fs-5 text-success"><strong>Subtotal a Cobrar: ${{ calculateSubtotal() | number:'1.2-2' }}</strong></p>
+      </div>
+    </div>
+
+    <!-- Botones de Acción -->
+    <div class="d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-outline-secondary" [routerLink]="['/dashboard/check-ins', checkInId, 'servicios']">Cancelar</button>
+      <button type="submit" class="btn btn-primary" [disabled]="!selectedItem || submitting">
+        {{ submitting ? 'Guardando...' : 'Confirmar y Registrar' }}
+      </button>
+    </div>
+
+  </form>
+</div>
