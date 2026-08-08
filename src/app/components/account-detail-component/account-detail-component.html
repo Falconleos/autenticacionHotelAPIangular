@@ -1,63 +1,75 @@
 <div class="container mt-4" *ngIf="!loading && account">
-  <h2>Resumen de Cuenta - Check-In #{{ checkInId }}</h2>
-  <hr>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Resumen de Cuenta <span class="text-muted fs-4">#{{ checkInId }}</span></h2>
+    <button class="btn btn-outline-secondary btn-sm" (click)="goBack()">
+      Volver a Check-Ins
+    </button>
+  </div>
+  <hr class="mb-4">
 
   <!-- Mensaje de error si ocurre -->
   <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
 
   <div class="row">
-    <!-- Columna Izquierda: Desglose y Totales -->
-    <div class="col-md-7">
+    <!-- Columna Izquierda: Desglose y Totales (Ocupa 7 columnas) -->
+    <div class="col-lg-7 mb-4">
       <div class="card shadow-sm mb-4">
-        <div class="card-header bg-dark text-white">Desglose de Cargos</div>
+        <div class="card-header bg-dark text-white py-3">
+          <h5 class="mb-0 fs-6 fw-bold">Desglose de Cargos</h5>
+        </div>
         <div class="card-body">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Concepto</th>
-                <th>Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Estadía base y servicios iniciales</td>
-                <td>${{ account.totalAmount | number:'1.2-2' }}</td>
-              </tr>
-              <!-- Si hay ítems adicionales en la cuenta -->
-              <tr *ngFor="let item of account.items">
-                <td>{{ item.description }} (x{{ item.quantity }})</td>
-                <td>${{ item.subtotal | number:'1.2-2' }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table class="table table-striped align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Concepto</th>
+                  <th class="text-end">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Estadía base y servicios iniciales</td>
+                  <td class="text-end fw-semibold">${{ account.totalAmount | number:'1.2-2' }}</td>
+                </tr>
+                <!-- Si hay ítems adicionales en la cuenta -->
+                <tr *ngFor="let item of account.items">
+                  <td>{{ item.description }} <span class="text-muted small">(x{{ item.quantity }})</span></td>
+                  <td class="text-end fw-semibold">${{ item.subtotal | number:'1.2-2' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-          <hr>
+          <hr class="my-3">
 
           <!-- Controles de Descuento y Recargo -->
-          <div class="row g-3 mb-3">
+          <div class="row g-3 mb-4 bg-light p-3 rounded border mx-0">
             <div class="col-6">
-              <label class="form-label">Recargo (%)</label>
+              <label class="form-label small fw-bold text-muted">Recargo (%)</label>
               <input type="number" class="form-control" [(ngModel)]="surchargePercent" min="0">
             </div>
             <div class="col-6">
-              <label class="form-label">Descuento (%)</label>
+              <label class="form-label small fw-bold text-muted">Descuento (%)</label>
               <input type="number" class="form-control" [(ngModel)]="discountPercent" min="0">
             </div>
           </div>
 
-          <div class="d-flex justify-content-between align-items-center">
-            <h5>Total General Ajustado:</h5>
-            <h4 class="text-primary">${{ calculateAdjustedTotal() | number:'1.2-2' }}</h4>
+          <!-- Totales -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="text-muted fw-semibold">Total General Ajustado:</span>
+            <h4 class="text-dark fw-bold mb-0">${{ calculateAdjustedTotal() | number:'1.2-2' }}</h4>
           </div>
-          <div class="d-flex justify-content-between align-items-center">
-            <span class="text-muted">Restante a pagar:</span>
-            <h4 [ngClass]="calculateRemaining() === 0 ? 'text-success' : 'text-danger'">
+          
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted fw-semibold">Restante a pagar:</span>
+            <h4 [ngClass]="calculateRemaining() === 0 ? 'text-success' : 'text-danger'" class="fw-bold mb-0">
               ${{ calculateRemaining() | number:'1.2-2' }}
             </h4>
           </div>
-          <div class="mt-2">
-            <span class="badge" [ngClass]="account.isPaid ? 'bg-success' : 'bg-warning text-dark'">
-              Estado de la cuenta: {{ account.isPaid ? 'Pagada (Paid: true)' : 'Pendiente' }}
+
+          <div class="mt-3">
+            <span class="badge px-3 py-2 fs-6" [ngClass]="account.isPaid ? 'bg-success' : 'bg-warning text-dark'">
+              Estado: {{ account.isPaid ? 'Pagada' : 'Pendiente' }}
             </span>
           </div>
         </div>
@@ -65,13 +77,16 @@
 
       <!-- Historial de Pagos -->
       <div class="card shadow-sm">
-        <div class="card-header bg-secondary text-white">Historial de Pagos</div>
+        <div class="card-header bg-secondary text-white py-3">
+          <h5 class="mb-0 fs-6 fw-bold">Historial de Pagos</h5>
+        </div>
         <div class="card-body">
-          <ul class="list-group" *ngIf="account.payments && account.payments.length > 0; else noPayments">
-            <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let p of account.payments">
+          <ul class="list-group list-group-flush" *ngIf="account.payments && account.payments.length > 0; else noPayments">
+            <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2" *ngFor="let p of account.payments">
               <div>
-                <strong>${{ p.amount | number:'1.2-2' }}</strong> - <span class="badge bg-info">{{ p.paymentMethod }}</span>
-                <br><small class="text-muted">{{ p.paymentDate }} | Ref: {{ p.transactionReference }}</small>
+                <strong>${{ p.amount | number:'1.2-2' }}</strong> 
+                <span class="badge bg-info text-dark ms-2">{{ p.paymentMethod }}</span>
+                <br><small class="text-muted">{{ p.paymentDate }} | Ref: {{ p.transactionReference || 'N/A' }}</small>
               </div>
             </li>
           </ul>
@@ -82,17 +97,19 @@
       </div>
     </div>
 
-    <!-- Columna Derecha: Formulario para Agregar Pago -->
-    <div class="col-md-5">
+    <!-- Columna Derecha: Formulario para Agregar Pago (Ocupa 5 columnas) -->
+    <div class="col-lg-5">
       <div class="card shadow-sm">
-        <div class="card-header bg-success text-white">Registrar Pago</div>
+        <div class="card-header bg-success text-white py-3">
+          <h5 class="mb-0 fs-6 fw-bold">Registrar Pago</h5>
+        </div>
         <div class="card-body">
           <div class="mb-3">
-            <label class="form-label">Monto a Pagar ($)</label>
+            <label class="form-label fw-semibold">Monto a Pagar ($)</label>
             <input type="number" class="form-control" [(ngModel)]="paymentAmount">
           </div>
           <div class="mb-3">
-            <label class="form-label">Método de Pago</label>
+            <label class="form-label fw-semibold">Método de Pago</label>
             <select class="form-select" [(ngModel)]="paymentMethod">
               <option value="CASH">Efectivo</option>
               <option value="CREDIT_CARD">Tarjeta de Crédito</option>
@@ -101,15 +118,14 @@
             </select>
           </div>
           <div class="mb-3">
-            <label class="form-label">Referencia / Comprobante</label>
+            <label class="form-label fw-semibold">Referencia / Comprobante</label>
             <input type="text" class="form-control" [(ngModel)]="transactionReference" placeholder="Ej: Transacción #1234">
           </div>
-          <button class="btn btn-success w-100" (click)="submitPayment()" [disabled]="calculateRemaining() === 0">
+          <button class="btn btn-success w-100 py-2 fw-semibold" (click)="submitPayment()" [disabled]="calculateRemaining() === 0">
             Procesar Pago
           </button>
         </div>
       </div>
-      <button class="btn btn-outline-secondary w-100 mt-3" (click)="goBack()">Volver a Check-Ins</button>
     </div>
   </div>
 </div>

@@ -9,7 +9,8 @@ import { AccountDTOResponse } from '../../models/account.model';
   selector: 'app-account-detail',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './account-detail-component.html'
+  templateUrl: './account-detail-component.html',
+  styleUrls: ['./account-detail-component.css']
 })
 export class AccountDetailComponent implements OnInit {
   checkInId!: number;
