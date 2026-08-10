@@ -44,8 +44,8 @@
       <tr *ngFor="let item of checkIns">
         <td>{{ item.id }}</td>
         <td>
-          <span *ngIf="item.user">{{ item.user?.name }} {{ item.user?.surname }}</span>
-          <span *ngIf="!item.user && $any(item.booking)?.user">{{ $any(item.booking).user?.name }} {{ $any(item.booking).user?.surname }}</span>
+          <span *ngIf="item.user">{{ item.user.name }} {{ item.user.surname }}</span>
+          <span *ngIf="!item.user && $any(item.booking)?.user">{{ $any(item.booking).user.name }} {{ $any(item.booking).user.surname }}</span>
           <span *ngIf="!item.user && !$any(item.booking)?.user" class="text-muted">N/A</span>
         </td>
         <td>
@@ -69,9 +69,9 @@
         </td>
         <td>
           <div class="btn-group btn-group-sm" role="group">
-            <button class="btn btn-warning me-1" (click)="interruptPlaceholder(item.id)" [disabled]="!canModify">Interrumpir</button>
+            <button class="btn btn-warning me-1" (click)="interruptStay(item.id)" [disabled]="!canModify || item.checkInState === 'INTERRUPTED' || item.checkInState === 'COMPLETED'">Interrumpir</button>
             <button class="btn btn-info me-1 text-white" (click)="viewAccountPlaceholder(item.id)">Ver cuenta</button>
-            <button class="btn btn-secondary" (click)="servicesPlaceholder(item.id)">Servicios</button>
+            <button class="btn btn-secondary" (click)="servicesPlaceholder(item.id)" [disabled]="item.checkInState === 'INTERRUPTED' || item.checkInState === 'COMPLETED'">Servicios</button>
           </div>
         </td>
       </tr>

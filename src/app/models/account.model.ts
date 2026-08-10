@@ -1,3 +1,5 @@
+import { PaymentDTOResponse } from './payment.model';
+
 export interface AccountDTOResponse {
   id: number;
   checkInId: number;
@@ -5,7 +7,7 @@ export interface AccountDTOResponse {
   paidAmount: number;
   remainingBalance?: number;
   isPaid: boolean;
-  payments: any[]; // O tu interfaz de pago correspondiente
+  payments: PaymentDTOResponse[]; // <-- Cambiado de any[] a PaymentDTOResponse[]
   user?: {
     name: string;
     surname: string;

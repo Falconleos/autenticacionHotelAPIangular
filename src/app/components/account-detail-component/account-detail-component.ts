@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from '../../services/account-service';
+import { CheckInService } from '../../services/check-in-service';
 import { AccountDTOResponse } from '../../models/account.model';
 
 @Component({
@@ -15,6 +16,7 @@ import { AccountDTOResponse } from '../../models/account.model';
 export class AccountDetailComponent implements OnInit {
   checkInId!: number;
   account?: AccountDTOResponse;
+  checkInState: string = '';
   loading = true;
   errorMessage = '';
 
@@ -27,10 +29,14 @@ export class AccountDetailComponent implements OnInit {
   discountPercent: number = 0;
   surchargePercent: number = 0;
 
+  // Total que se actualiza únicamente al hacer clic en "Aplicar"
+  adjustedTotal: number = 0;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private accountService: AccountService,
+    private checkInService: CheckInService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -38,20 +44,38 @@ export class AccountDetailComponent implements OnInit {
     const idParam = this.route.snapshot.paramMap.get('checkInId');
     if (idParam) {
       this.checkInId = +idParam;
-      this.loadAccount();
+      this.loadData();
     }
   }
 
-  loadAccount(): void {
+  loadData(): void {
     this.loading = true;
     this.errorMessage = '';
 
+    // Cargamos la cuenta y el check-in en paralelo o secuencia para obtener su estado
     this.accountService.getAccountByCheckInId(this.checkInId).subscribe({
-      next: (data) => {
-        this.account = data;
+      next: (accountData) => {
+        this.account = accountData;
+        
+        // Inicializamos el total con la suma base de la estadía e ítems
+        this.adjustedTotal = this.calculateRawTotal();
         this.paymentAmount = this.calculateRemaining();
-        this.loading = false;
-        this.cdr.markForCheck();
+
+        // Obtenemos el check-in para conocer su estado actual
+        this.checkInService.getAll().subscribe({
+          next: (checkIns) => {
+            const currentCheckIn = checkIns.find(c => c.id === this.checkInId);
+            if (currentCheckIn) {
+              this.checkInState = currentCheckIn.checkInState;
+            }
+            this.loading = false;
+            this.cdr.markForCheck();
+          },
+          error: () => {
+            this.loading = false;
+            this.cdr.markForCheck();
+          }
+        });
       },
       error: (err) => {
         this.errorMessage = 'No se pudo cargar el resumen de la cuenta.';
@@ -62,19 +86,33 @@ export class AccountDetailComponent implements OnInit {
     });
   }
 
-  calculateAdjustedTotal(): number {
+  // Calcula la suma bruta (Estadía base + ítems) sin porcentajes
+  calculateRawTotal(): number {
     if (!this.account) return 0;
     const base = this.account.totalAmount;
-    const surcharge = base * (this.surchargePercent / 100);
-    const discount = base * (this.discountPercent / 100);
-    return Math.max(0, base + surcharge - discount);
+    const itemsTotal = this.account.items ? this.account.items.reduce((acc, item) => acc + item.subtotal, 0) : 0;
+    return base + itemsTotal;
+  }
+
+  // Se ejecuta al hacer clic en el botón "Aplicar"
+  applyAdjustments(): void {
+    const rawTotal = this.calculateRawTotal();
+    const surcharge = rawTotal * (this.surchargePercent / 100);
+    const discount = rawTotal * (this.discountPercent / 100);
+    
+    this.adjustedTotal = Math.max(0, rawTotal + surcharge - discount);
+    this.paymentAmount = this.calculateRemaining();
+  }
+
+  // Retorna el total ajustado actual para el HTML
+  calculateAdjustedTotal(): number {
+    return this.adjustedTotal;
   }
 
   calculateRemaining(): number {
     if (!this.account) return 0;
-    const totalWithAdjustments = this.calculateAdjustedTotal();
     const totalPaid = this.account.payments ? this.account.payments.reduce((acc, p) => acc + p.amount, 0) : 0;
-    return Math.max(0, totalWithAdjustments - totalPaid);
+    return Math.max(0, this.adjustedTotal - totalPaid);
   }
 
   submitPayment(): void {
@@ -91,7 +129,7 @@ export class AccountDetailComponent implements OnInit {
       next: () => {
         this.paymentAmount = 0;
         this.transactionReference = '';
-        this.loadAccount();
+        this.loadData();
       },
       error: (err) => {
         alert('Error al registrar el pago.');

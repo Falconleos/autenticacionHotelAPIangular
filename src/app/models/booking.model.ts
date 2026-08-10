@@ -19,3 +19,8 @@ export interface BookingDtoResponse {
   active: boolean;
   createdAt: string;
 }
+
+export interface BookingCancellationDtoRequest {
+  bookingId: number;
+  reason?: string;
+}

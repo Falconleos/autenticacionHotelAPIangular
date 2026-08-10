@@ -1,7 +1,6 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Gestión de Pagos Registrados</h2>
-    <!-- Evitamos botón de nuevo pago directo si la lógica depende estrictamente de agregarlo desde la cuenta -->
   </div>
   <hr>
 
@@ -15,6 +14,7 @@
       <tr>
         <th>ID Pago</th>
         <th>Huésped (Nombre y Apellido)</th>
+        <th>Registrado por</th> <!-- NUEVA COLUMNA -->
         <th>ID Cuenta</th>
         <th>Monto ($)</th>
         <th>Fecha y Hora</th>
@@ -30,6 +30,13 @@
             {{ payment.userName }} {{ payment.userSurname }}
           </span>
           <ng-template #noUser>-</ng-template>
+        </td>
+        <!-- NUEVA CELDA -->
+        <td>
+          <span *ngIf="payment.registeredByName || payment.registeredBySurname; else noRegistrar">
+            {{ payment.registeredByName }} {{ payment.registeredBySurname }}
+          </span>
+          <ng-template #noRegistrar>-</ng-template>
         </td>
         <td>
           <span class="badge bg-secondary">Cuenta #{{ payment.accountId }}</span>

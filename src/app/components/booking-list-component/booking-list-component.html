@@ -57,14 +57,20 @@
           <div class="d-flex gap-1">
             <button 
               class="btn btn-success btn-sm" 
-              (click)="confirmBookingPlaceholder(booking.id)" 
-              [disabled]="!canModify">
+              (click)="confirmBooking(booking.id)" 
+              [disabled]="!canModify || booking.state === 'CHECKED_IN' || booking.state === 'CONFIRMED'">
               Confirmar
             </button>
             <button 
-              class="btn btn-danger btn-sm" 
-              (click)="cancelBookingPlaceholder(booking.id)" 
+              class="btn btn-info btn-sm text-white" 
+              (click)="openPaymentModal(booking)"
               [disabled]="!canModify">
+              Señas
+            </button>
+            <button 
+              class="btn btn-danger btn-sm" 
+              (click)="cancelBooking(booking.id)" 
+              [disabled]="!canModify || booking.state === 'CHECKED_IN' || booking.state === 'CANCELLED'">
               Cancelar
             </button>
           </div>
@@ -76,5 +82,66 @@
   <!-- Mensaje si la lista está vacía -->
   <div *ngIf="!loading && !errorMessage && bookings.length === 0" class="alert alert-warning">
     No se encontraron reservas registradas en el sistema.
+  </div>
+
+  <!-- PANEL DE GESTIÓN DE SEÑAS -->
+  <div *ngIf="selectedBookingForPayment" class="card mt-4 border-info shadow-sm">
+    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Gestión de Señas - Reserva #{{ selectedBookingForPayment.id }} ({{ selectedBookingForPayment.guestFirstName }} {{ selectedBookingForPayment.guestLastName }})</h5>
+      <button class="btn-close btn-close-white" (click)="closePaymentModal()"></button>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <!-- Formulario para agregar seña -->
+        <div class="col-md-5 border-end">
+          <h6 class="text-primary mb-3">Registrar Nueva Seña</h6>
+          <div class="mb-3">
+            <label class="form-label">Monto ($)</label>
+            <input type="number" class="form-control" [(ngModel)]="newPaymentAmount" placeholder="Ej: 5000">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Método de Pago</label>
+            <select class="form-select" [(ngModel)]="newPaymentMethod">
+              <option value="CASH">Efectivo (CASH)</option>
+              <option value="TRANSFER">Transferencia</option>
+              <option value="CREDIT_CARD">Tarjeta de Crédito</option>
+              <option value="DEBIT_CARD">Tarjeta de Débito</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Comprobante / Referencia</label>
+            <input type="text" class="form-control" [(ngModel)]="newPaymentReference" placeholder="Número de voucher o transferencia">
+          </div>
+          <button class="btn btn-primary w-100" (click)="submitBookingPayment()">Guardar Seña</button>
+        </div>
+
+        <!-- Listado de señas existentes -->
+        <div class="col-md-7">
+          <h6 class="text-secondary mb-3">Señas Registradas</h6>
+          <div *ngIf="loadingPayments" class="alert alert-info">Cargando pagos...</div>
+          <table *ngIf="!loadingPayments && bookingPayments.length > 0" class="table table-sm table-bordered align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Fecha</th>
+                <th>Método</th>
+                <th>Ref</th>
+                <th>Monto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of bookingPayments">
+                <td>{{ p.paymentDate | date:'short' }}</td>
+                <td>{{ p.paymentMethod }}</td>
+                <td>{{ p.transactionReference || '-' }}</td>
+                <td>${{ p.amount | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="!loadingPayments && bookingPayments.length === 0" class="alert alert-warning">
+            Esta reserva aún no registra señas previas.
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

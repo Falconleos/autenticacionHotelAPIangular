@@ -94,10 +94,8 @@ export class CheckInListComponent implements OnInit {
   }
 
   goToCreateCheckIn(booking: any): void {
-    // Intentamos extraer el ID de usuario de distintas propiedades comunes por seguridad
     const userId = booking.user?.id || booking.userId || booking.guest?.id;
 
-    // Redirige al formulario pasando el ID de reserva y de usuario por queryParams
     this.router.navigate(['/dashboard/check-ins/nuevo'], { 
       queryParams: { 
         bookingId: booking.id, 
@@ -106,12 +104,30 @@ export class CheckInListComponent implements OnInit {
     });
   }
 
-  interruptPlaceholder(id: number): void {
+  interruptStay(id: number): void {
     if (!this.canModify) {
       alert('No tienes los permisos necesarios para realizar esta acción.');
       return;
     }
-    alert(`Acción "Interrumpir" presionada para la estadía ID: ${id}`);
+
+    const reason = prompt('Ingrese el motivo de la interrupción de la estadía:');
+    if (!reason || reason.trim() === '') {
+      alert('Debe ingresar un motivo válido para interrumpir la estadía.');
+      return;
+    }
+
+    this.checkInService.interruptStay(id, reason).subscribe({
+      next: () => {
+        alert('Estadía interrumpida exitosamente.');
+        this.loadData();
+      },
+      error: (err) => {
+        console.error(err);
+        // Extraemos el mensaje específico que viene del backend (mensaje o message)
+        const backendMessage = err.error?.mensaje || err.error?.message;
+        alert(backendMessage || 'Error al intentar interrumpir la estadía.');
+      }
+    });
   }
 
   viewAccountPlaceholder(id: number): void {
