@@ -27,15 +27,27 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- Estadía base -->
+                <!-- Estadía base (¡Corregido a baseAmount!) -->
                 <tr>
                   <td>Estadía base</td>
-                  <td class="text-end fw-semibold">${{ account.totalAmount | number:'1.2-2' }}</td>
+                  <td class="text-end fw-semibold">${{ account.baseAmount | number:'1.2-2' }}</td>
                 </tr>
-                <!-- Servicios adicionales e ítems -->
+                <!-- Servicios adicionales e ítems uno por uno -->
                 <tr *ngFor="let item of account.items">
                   <td>{{ item.description }} <span class="text-muted small">(x{{ item.quantity }})</span></td>
                   <td class="text-end fw-semibold">${{ item.subtotal | number:'1.2-2' }}</td>
+                </tr>
+                <!-- Fila de Ajuste por Porcentaje (si es diferente de 0) -->
+                <tr *ngIf="adjustmentPercentage !== 0">
+                  <td>
+                    Ajuste por porcentaje 
+                    <span class="badge" [ngClass]="adjustmentPercentage > 0 ? 'bg-warning text-dark' : 'bg-info text-dark'">
+                      {{ adjustmentPercentage > 0 ? '+' + adjustmentPercentage + '%' : adjustmentPercentage + '%' }}
+                    </span>
+                  </td>
+                  <td class="text-end fw-semibold" [ngClass]="adjustmentPercentage > 0 ? 'text-danger' : 'text-success'">
+                    {{ adjustmentPercentage > 0 ? '+' : '' }}${{ calculateAdjustmentAmount() | number:'1.2-2' }}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -43,15 +55,11 @@
 
           <hr class="my-3">
 
-          <!-- Controles de Descuento y Recargo con Botón Aplicar -->
+          <!-- Control Unificado de Ajuste (Deshabilitado si está pagado) -->
           <div class="row g-3 mb-4 bg-light p-3 rounded border mx-0 align-items-end">
-            <div class="col-md-4">
-              <label class="form-label small fw-bold text-muted">Recargo (%)</label>
-              <input type="number" class="form-control" [(ngModel)]="surchargePercent" min="0" [disabled]="account.isPaid">
-            </div>
-            <div class="col-md-4">
-              <label class="form-label small fw-bold text-muted">Descuento (%)</label>
-              <input type="number" class="form-control" [(ngModel)]="discountPercent" min="0" [disabled]="account.isPaid">
+            <div class="col-md-8">
+              <label class="form-label small fw-bold text-muted">Ajuste (%) <span class="fw-normal text-secondary">(Usa '-' para descuento, ej: -10)</span></label>
+              <input type="number" class="form-control" [(ngModel)]="adjustmentPercentage" [disabled]="account.isPaid" placeholder="Ej: 21 o -10">
             </div>
             <div class="col-md-4">
               <button class="btn btn-primary w-100 fw-semibold" (click)="applyAdjustments()" [disabled]="account.isPaid">

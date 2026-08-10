@@ -1,12 +1,13 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router'; // Importar RouterModule
 import { AccountService } from '../../services/account-service';
 import { AccountDTOResponse } from '../../models/account.model';
 
 @Component({
   selector: 'app-account-list',
   standalone: true,
-  imports: [CommonModule], // Quitamos RouterLink si no se usa
+  imports: [CommonModule, RouterModule], // Agregar RouterModule aquí
   templateUrl: './account-list-component.html',
   styleUrls: ['./account-list-component.css']
 })
@@ -26,8 +27,6 @@ export class AccountListComponent implements OnInit {
 
   loadAccounts(): void {
     this.loading = true;
-    this.errorMessage = '';
-    
     this.accountService.getAllAccounts().subscribe({
       next: (data: AccountDTOResponse[]) => {
         this.accounts = Array.isArray(data) ? [...data] : [];
@@ -35,19 +34,10 @@ export class AccountListComponent implements OnInit {
         this.cdr.markForCheck();
       },
       error: (err: any) => {
-        this.errorMessage = 'No se pudieron cargar las cuentas o no cuentas con los permisos necesarios.';
+        this.errorMessage = 'No se pudieron cargar las cuentas.';
         this.loading = false;
         this.cdr.markForCheck();
-        console.error(err);
       }
     });
-  }
-
-  openAddPaymentModal(accountId: number): void {
-    alert('Funcionalidad de agregar pago próximamente.');
-  }
-
-  openAddSurchargeModal(accountId: number): void {
-    alert('Funcionalidad de agregar recargo próximamente.');
   }
 }

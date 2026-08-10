@@ -1,9 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommentService } from '../../services/comment-service';
 import { CommentDtoResponse } from '../../models/comment.model';
-import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-comment-list',
@@ -16,59 +15,55 @@ export class CommentListComponent implements OnInit {
   comments: CommentDtoResponse[] = [];
   loading = true;
   errorMessage = '';
-  canModify = false; // Permite acceso a ADMIN, RECEPCIONIST y GUEST
+  isAdminOrRecepcionist = false;
+  isGuest = false;
 
   constructor(
     private commentService: CommentService,
-    private authService: AuthService,
+    private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.checkUserRole();
+    this.checkUserRoles();
     this.loadComments();
   }
 
-  checkUserRole(): void {
-    const storedRoles = localStorage.getItem('role');
-    if (storedRoles) {
-      try {
-        const roles = JSON.parse(storedRoles);
-        if (Array.isArray(roles)) {
-          this.canModify = roles.some((r: any) => {
-            const val = typeof r === 'string' ? r : (r.authority || '');
-            return val === 'ADMIN' || val === 'ROLE_ADMIN' || 
-                   val === 'RECEPCIONIST' || val === 'ROLE_RECEPCIONIST' || 
-                   val === 'GUEST' || val === 'ROLE_GUEST';
-          });
-        } else {
-          const val = typeof roles === 'string' ? roles : '';
-          this.canModify = val === 'ADMIN' || val === 'ROLE_ADMIN' || 
-                           val === 'RECEPCIONIST' || val === 'ROLE_RECEPCIONIST' || 
-                           val === 'GUEST' || val === 'ROLE_GUEST';
-        }
-      } catch (e) {
-        this.canModify = storedRoles.includes('ADMIN') || 
-                         storedRoles.includes('RECEPCIONIST') || 
-                         storedRoles.includes('GUEST');
-      }
-    } else {
-      this.canModify = false;
-    }
+  checkUserRoles(): void {
+    const storedRoles = localStorage.getItem('role') || '';
+    this.isAdminOrRecepcionist = storedRoles.includes('ADMIN') || storedRoles.includes('RECEPCIONIST');
+    this.isGuest = storedRoles.includes('GUEST');
   }
 
   loadComments(): void {
     this.loading = true;
     this.errorMessage = '';
-    
+
+    if (this.isGuest && !this.isAdminOrRecepcionist) {
+      this.commentService.getMyComments().subscribe({
+        next: (data: CommentDtoResponse[]) => {
+          this.comments = Array.isArray(data) ? [...data] : [];
+          this.loading = false;
+          this.cdr.markForCheck();
+        },
+        error: (err: any) => {
+          this.errorMessage = 'No se pudieron cargar tus comentarios.';
+          this.loading = false;
+          this.cdr.markForCheck();
+          console.error(err);
+        }
+      });
+      return;
+    }
+
     this.commentService.getAll().subscribe({
-      next: (data) => {
+      next: (data: CommentDtoResponse[]) => {
         this.comments = Array.isArray(data) ? [...data] : [];
         this.loading = false;
-        this.cdr.markForCheck(); // Fuerza la actualización de la vista
+        this.cdr.markForCheck();
       },
-      error: (err) => {
-        this.errorMessage = 'No se pudieron cargar los comentarios o no cuentas con los permisos necesarios.';
+      error: (err: any) => {
+        this.errorMessage = 'No se pudieron cargar los comentarios del sistema.';
         this.loading = false;
         this.cdr.markForCheck();
         console.error(err);
@@ -76,19 +71,18 @@ export class CommentListComponent implements OnInit {
     });
   }
 
-  deleteComment(id: number): void {
-    if (!this.canModify) {
-      alert('No tienes los permisos necesarios para realizar esta acción.');
-      return;
-    }
+  onNewCommentClick(): void {
+    this.router.navigate(['/dashboard/comments/nuevo']);
+  }
 
+  deleteComment(id: number): void {
     if (confirm('¿Estás seguro de que deseas eliminar este comentario?')) {
       this.commentService.deleteComment(id).subscribe({
         next: () => {
           this.comments = this.comments.filter(comment => comment.id !== id);
           this.cdr.markForCheck();
         },
-        error: (err) => {
+        error: (err: any) => {
           alert('Error al eliminar el comentario.');
           console.error(err);
         }

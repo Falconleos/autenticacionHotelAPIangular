@@ -27,4 +27,12 @@ export class AccountService {
   getAccountByCheckInId(checkInId: number): Observable<AccountDTOResponse> {
     return this.http.get<AccountDTOResponse>(`${this.apiUrl}/check-in/${checkInId}`, { withCredentials: true });
   }
+
+  updateAdjustmentPercentage(checkInId: number, adjustmentPercentage: number): Observable<AccountDTOResponse> {
+    return this.http.put<AccountDTOResponse>(
+      `${this.apiUrl}/check-in/${checkInId}/adjustment`, 
+      { adjustmentPercentage }, 
+      { withCredentials: true }
+    );
+  }
 }

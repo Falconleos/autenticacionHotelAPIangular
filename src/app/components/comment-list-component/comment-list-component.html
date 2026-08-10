@@ -1,59 +1,57 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Gestión de Comentarios</h2>
-    <!-- Botón de nuevo comentario habilitado para ADMIN, RECEPCIONIST y GUEST -->
+    <!-- Permitimos que el huésped o admin creen comentarios -->
     <button 
       class="btn btn-primary" 
-      [routerLink]="canModify ? '/dashboard/comments/nuevo' : null" 
-      [disabled]="!canModify">
-      Nuevo Comentario
+      (click)="onNewCommentClick()">
+      <i class="bi bi-plus-lg"></i> Nuevo Comentario
     </button>
   </div>
   <hr>
 
-  <!-- Mensajes de carga o error -->
   <div *ngIf="loading" class="alert alert-info">Cargando registros...</div>
   <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
 
-  <!-- Tabla de datos -->
-  <table *ngIf="!loading && !errorMessage && comments.length > 0" class="table table-striped table-hover align-middle">
+  <table *ngIf="!loading && !errorMessage && comments.length > 0" class="table table-striped table-hover align-middle shadow-sm">
     <thead class="table-dark">
       <tr>
         <th>ID</th>
-        <th>Nombre y Apellido</th>
-        <th>Comentario / Contenido</th>
+        <th>Usuario</th>
+        <th>Comentario</th>
         <th>Valoración</th>
-        <th>Nº Habitación</th>
-        <th>Período Check-in</th>
-        <th>Fecha Creación</th>
-        <th>Acciones</th>
+        <th>ID Estadía</th>
+        <th>Fecha</th>
+        <th *ngIf="isAdminOrRecepcionist">Acciones</th> <!-- Opcional: acciones solo para admin -->
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let comment of comments">
-        <td>{{ comment.id }}</td>
+        <td><strong>#{{ comment.id }}</strong></td>
         <td>
-          <span *ngIf="comment.user">{{ comment.user.name }} {{ comment.user.surname }}</span>
-          <span *ngIf="!comment.user" class="text-muted">-</span>
+          <div *ngIf="comment.user">
+            <div>{{ comment.user.name }} {{ comment.user.surname }}</div>
+            <small class="text-muted">{{ comment.user.email }}</small>
+          </div>
+          <span *ngIf="!comment.user" class="text-muted">Desconocido</span>
         </td>
         <td>{{ comment.content }}</td>
         <td>
-          <span class="badge bg-warning text-dark">{{ comment.rating }} / 5</span>
+          <span class="badge bg-warning text-dark fs-6">{{ comment.rating }} <i class="bi bi-star-fill"></i></span>
         </td>
-        <td>Estadía #{{ comment.checkInId }}</td>
-        <td>ID Estadía: {{ comment.checkInId }}</td>
-        <td>{{ comment.createdAt | date:'short' }}</td>
-        <td>
+        <td><span class="badge bg-secondary">Check-in #{{ comment.checkInId }}</span></td>
+        <td>{{ comment.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+        
+        <!-- Acciones restringidas para que el huésped no intente borrar/editar ajeno si no corresponde -->
+        <td *ngIf="isAdminOrRecepcionist">
           <button 
             class="btn btn-warning btn-sm me-1" 
-            [routerLink]="canModify ? ['/dashboard/comments/editar', comment.id] : null" 
-            [disabled]="!canModify">
+            [routerLink]="['/dashboard/comments/editar', comment.id]">
             Editar
           </button>
           <button 
             class="btn btn-danger btn-sm" 
-            (click)="deleteComment(comment.id)" 
-            [disabled]="!canModify">
+            (click)="deleteComment(comment.id)">
             Eliminar
           </button>
         </td>
@@ -61,7 +59,6 @@
     </tbody>
   </table>
 
-  <!-- Mensaje si la lista está vacía -->
   <div *ngIf="!loading && !errorMessage && comments.length === 0" class="alert alert-warning">
     No se encontraron comentarios registrados en el sistema.
   </div>

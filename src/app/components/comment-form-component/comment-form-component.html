@@ -1,0 +1,41 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>{{ isEditMode ? 'Editar Comentario' : 'Nuevo Comentario' }}</h2>
+    <button class="btn btn-outline-secondary btn-sm" (click)="goBack()">Volver</button>
+  </div>
+  <hr>
+
+  <div *ngIf="loading" class="alert alert-info">Cargando...</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <div *ngIf="!isEditMode && !checkInId && !loading" class="card shadow-sm mb-4">
+    <div class="card-header bg-secondary text-white">Selecciona tu estadía</div>
+    <div class="card-body">
+      <select class="form-select" [(ngModel)]="selectedCheckInId">
+        <option [ngValue]="null" disabled>-- Seleccione una estadía --</option>
+        <!-- Corregido para evitar propiedades que no existen en el DTO de Check-in -->
+        <option *ngFor="let c of availableCheckIns" [ngValue]="c.id">
+            Habitación {{ c.booking?.room?.number }} ({{ c.booking?.room?.roomTypeName }}) - Huésped: {{ c.booking?.guestFirstName }} {{ c.booking?.guestLastName }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card shadow-sm" *ngIf="!loading">
+    <div class="card-body">
+      <div class="mb-3">
+        <label class="form-label">Valoración</label>
+        <select class="form-select" [(ngModel)]="rating">
+          <option *ngFor="let r of [1,2,3,4,5]" [value]="r">{{r}} - {{r === 5 ? 'Excelente' : r === 1 ? 'Malo' : 'Estándar'}}</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Tu Comentario</label>
+        <textarea class="form-control" rows="4" [(ngModel)]="content"></textarea>
+      </div>
+      <button class="btn btn-primary w-100" (click)="saveComment()" [disabled]="!content.trim() || (!checkInId && !selectedCheckInId)">
+        {{ isEditMode ? 'Guardar Cambios' : 'Publicar Comentario' }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -18,6 +18,10 @@ export class CheckInService {
     return this.http.get<CheckInDtoResponse[]>(this.apiUrl, { withCredentials: true });
   }
 
+  getMyCheckIns(): Observable<CheckInDtoResponse[]> {
+    return this.http.get<CheckInDtoResponse[]>(`${this.apiUrl}/my-check-ins`, { withCredentials: true });
+  }
+
   getTodayCheckIns(): Observable<BookingDtoResponse[]> {
     return this.http.get<BookingDtoResponse[]>(`${this.bookingApiUrl}/today-checkins`, { withCredentials: true });
   }

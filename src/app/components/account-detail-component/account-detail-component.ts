@@ -25,11 +25,10 @@ export class AccountDetailComponent implements OnInit {
   paymentMethod: string = 'CASH';
   transactionReference: string = '';
 
-  // Ajustes por porcentaje
-  discountPercent: number = 0;
-  surchargePercent: number = 0;
+  // Único ajuste por porcentaje (positivo para recargo, negativo para descuento)
+  adjustmentPercentage: number = 0;
 
-  // Total que se actualiza únicamente al hacer clic en "Aplicar"
+  // Total que se actualiza al aplicar el ajuste
   adjustedTotal: number = 0;
 
   constructor(
@@ -52,13 +51,15 @@ export class AccountDetailComponent implements OnInit {
     this.loading = true;
     this.errorMessage = '';
 
-    // Cargamos la cuenta y el check-in en paralelo o secuencia para obtener su estado
     this.accountService.getAccountByCheckInId(this.checkInId).subscribe({
       next: (accountData) => {
         this.account = accountData;
         
-        // Inicializamos el total con la suma base de la estadía e ítems
-        this.adjustedTotal = this.calculateRawTotal();
+        // Sincronizamos el porcentaje que viene del backend
+        this.adjustmentPercentage = accountData.adjustmentPercentage ?? 0;
+        
+        // Inicializamos los totales
+        this.adjustedTotal = accountData.totalAmount;
         this.paymentAmount = this.calculateRemaining();
 
         // Obtenemos el check-in para conocer su estado actual
@@ -89,34 +90,47 @@ export class AccountDetailComponent implements OnInit {
   // Calcula la suma bruta (Estadía base + ítems) sin porcentajes
   calculateRawTotal(): number {
     if (!this.account) return 0;
-    const base = this.account.totalAmount;
+    const base = this.account.baseAmount ?? 0;
     const itemsTotal = this.account.items ? this.account.items.reduce((acc, item) => acc + item.subtotal, 0) : 0;
     return base + itemsTotal;
   }
 
-  // Se ejecuta al hacer clic en el botón "Aplicar"
-  applyAdjustments(): void {
+  // Calcula el monto exacto en dinero que representa el ajuste (positivo o negativo)
+  calculateAdjustmentAmount(): number {
     const rawTotal = this.calculateRawTotal();
-    const surcharge = rawTotal * (this.surchargePercent / 100);
-    const discount = rawTotal * (this.discountPercent / 100);
-    
-    this.adjustedTotal = Math.max(0, rawTotal + surcharge - discount);
-    this.paymentAmount = this.calculateRemaining();
+    return rawTotal * (this.adjustmentPercentage / 100);
   }
 
-  // Retorna el total ajustado actual para el HTML
+  // Se ejecuta al hacer clic en el botón "Aplicar"
+  applyAdjustments(): void {
+    if (!this.account || this.account.isPaid) return;
+
+    this.accountService.updateAdjustmentPercentage(this.checkInId, this.adjustmentPercentage).subscribe({
+      next: (updatedAccount) => {
+        this.account = updatedAccount;
+        this.adjustedTotal = updatedAccount.totalAmount;
+        this.paymentAmount = this.calculateRemaining();
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        alert('Error al aplicar el porcentaje de ajuste.');
+        console.error(err);
+      }
+    });
+  }
+
   calculateAdjustedTotal(): number {
-    return this.adjustedTotal;
+    return this.account ? this.account.totalAmount : this.adjustedTotal;
   }
 
   calculateRemaining(): number {
     if (!this.account) return 0;
     const totalPaid = this.account.payments ? this.account.payments.reduce((acc, p) => acc + p.amount, 0) : 0;
-    return Math.max(0, this.adjustedTotal - totalPaid);
+    return Math.max(0, this.calculateAdjustedTotal() - totalPaid);
   }
 
   submitPayment(): void {
-    if (!this.account || this.paymentAmount <= 0) return;
+    if (!this.account || this.paymentAmount <= 0 || this.account.isPaid) return;
 
     const paymentPayload = {
       accountId: this.account.id,

@@ -57,41 +57,44 @@ export class CheckInListComponent implements OnInit {
   loadData(): void {
     this.loading = true;
     this.errorMessage = '';
-    
-    // 1. Cargamos todos los check-ins existentes
+
+    // Cargamos los check-ins históricos de forma independiente
     this.checkInService.getAll().subscribe({
       next: (checkInsData) => {
         this.checkIns = Array.isArray(checkInsData) ? [...checkInsData] : [];
-        
-        // 2. Cargamos las reservas programadas para hoy desde el backend
-        this.checkInService.getTodayCheckIns().subscribe({
-          next: (todayBookings) => {
-            const activeBookingIdsWithCheckIn = new Set(
-              this.checkIns.map(c => c.booking?.id).filter(id => id != null)
-            );
-
-            // Filtramos las que todavía no tienen un check-in creado
-            this.pendingBookingsToday = (Array.isArray(todayBookings) ? todayBookings : []).filter(
-              b => !activeBookingIdsWithCheckIn.has(b.id)
-            );
-
-            this.loading = false;
-            this.cdr.markForCheck();
-          },
-          error: () => {
-            this.loading = false;
-            this.cdr.markForCheck();
-          }
-        });
+        this.processPendingBookings();
       },
       error: (err) => {
-        this.errorMessage = 'No se pudieron cargar las estadías en curso o no cuentas con los permisos necesarios.';
-        this.loading = false;
-        this.cdr.markForCheck();
-        console.error(err);
+        console.error('Error cargando check-ins:', err);
+        this.checkIns = [];
+        this.processPendingBookings(); // Intentamos cargar las de hoy aunque el histórico falle
       }
     });
   }
+
+  processPendingBookings(): void {
+    this.checkInService.getTodayCheckIns().subscribe({
+      next: (todayBookings) => {
+        const activeBookingIdsWithCheckIn = new Set(
+          this.checkIns.map(c => c.booking?.id).filter(id => id != null)
+        );
+
+        this.pendingBookingsToday = (Array.isArray(todayBookings) ? todayBookings : []).filter(
+          b => !activeBookingIdsWithCheckIn.has(b.id)
+        );
+
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error cargando reservas de hoy:', err);
+        this.errorMessage = 'No se pudieron cargar las reservas programadas para hoy.';
+        this.loading = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
 
   goToCreateCheckIn(booking: any): void {
     const userId = booking.user?.id || booking.userId || booking.guest?.id;
