@@ -1,108 +1,95 @@
-<div class="container-fluid px-4 py-5">
-  <div class="row justify-content-center">
-    <div class="col-xl-9 col-xxl-8">
+<div class="container mt-4">
+  <h2><i class="fa-solid fa-calendar-check me-2"></i> Completar Datos de la Reserva</h2>
+  <p class="text-subtitle mb-4">Ingresa la información del titular para registrar la nueva reserva en el sistema.</p>
+  <hr class="mb-4">
+
+  <!-- Alerta de Error -->
+  <div *ngIf="errorMessage" class="alert alert-danger mb-4">
+    <i class="fa-solid fa-triangle-exclamation me-2"></i> {{ errorMessage }}
+  </div>
+
+  <!-- Resumen de Selección Previa (Banner Superior Estilo Glass) -->
+  <div class="glass-summary-card mb-4" *ngIf="bookingData">
+    <div class="d-flex align-items-center mb-3">
+      <div class="summary-icon-box me-3">
+        <i class="fa-solid fa-door-open"></i>
+      </div>
+      <div>
+        <h5 class="fw-bold text-main mb-0">Habitación #{{ bookingData.room.number }}</h5>
+        <span class="text-subtitle">{{ bookingData.room.roomTypeName }}</span>
+      </div>
+    </div>
+    
+    <div class="row g-3 pt-3 summary-divider">
+      <div class="col-sm-6">
+        <div class="d-flex align-items-center text-subtitle">
+          <i class="fa-solid fa-calendar-days me-2 text-indigo"></i>
+          <span><strong class="text-main">Estadía:</strong> {{ bookingData.checkIn }} al {{ bookingData.checkOut }}</span>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="d-flex align-items-center text-subtitle">
+          <i class="fa-solid fa-users me-2 text-indigo"></i>
+          <span><strong class="text-main">Huéspedes:</strong> {{ bookingData.guestCount }} persona(s)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario Principal -->
+  <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()" class="glass-form">
+    
+    <h4 class="form-section-title">Información del Titular</h4>
+    <div class="row g-3 mb-4">
       
-      <!-- Encabezado de la Sección -->
-      <div class="d-flex align-items-center mb-4">
-        <button type="button" class="btn btn-light border shadow-sm rounded-circle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;" routerLink="/dashboard/bookings/disponibilidad" title="Volver">
-          <i class="bi bi-arrow-left text-secondary fs-5"></i>
-        </button>
-        <div>
-          <h2 class="fw-bold text-dark mb-1">Completar Datos de la Reserva</h2>
-          <p class="text-muted small mb-0">Ingresa la información del titular para registrar la nueva reserva en el sistema.</p>
+      <div class="col-md-6">
+        <label for="guestFirstName" class="form-label">Nombre *</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+          <input type="text" id="guestFirstName" class="form-control" formControlName="guestFirstName" placeholder="Ej: Juan">
         </div>
       </div>
 
-      <!-- Alerta de Error -->
-      <div *ngIf="errorMessage" class="alert alert-danger border-0 shadow-sm py-3 mb-4 rounded-4 d-flex align-items-center">
-        <i class="bi bi-exclamation-triangle-fill fs-5 me-2"></i>
-        <div>{{ errorMessage }}</div>
+      <div class="col-md-6">
+        <label for="guestLastName" class="form-label">Apellido *</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="fa-solid fa-id-card"></i></span>
+          <input type="text" id="guestLastName" class="form-control" formControlName="guestLastName" placeholder="Ej: Pérez">
+        </div>
       </div>
 
-      <!-- Tarjeta Contenedora Principal -->
-      <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
-        
-        <!-- Resumen de Selección Previa (Estilo Banner Superior interno) -->
-        <div class="selection-summary p-4 border-bottom bg-light-subtle" *ngIf="bookingData">
-          <div class="d-flex align-items-center mb-3">
-            <div class="badge bg-purple-soft text-purple p-2 rounded-3 me-2">
-              <i class="bi bi-door-open fs-5"></i>
-            </div>
-            <div>
-              <h5 class="fw-bold text-dark mb-0">Habitación #{{ bookingData.room.number }}</h5>
-              <span class="text-muted small">{{ bookingData.room.roomTypeName }}</span>
-            </div>
-          </div>
-          
-          <div class="row g-3 pt-2 border-top border-light">
-            <div class="col-sm-6">
-              <div class="d-flex align-items-center text-secondary small">
-                <i class="bi bi-calendar-range me-2 text-purple"></i>
-                <span><strong>Estadía:</strong> {{ bookingData.checkIn }} al {{ bookingData.checkOut }}</span>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="d-flex align-items-center text-secondary small">
-                <i class="bi bi-people me-2 text-purple"></i>
-                <span><strong>Huéspedes:</strong> {{ bookingData.guestCount }} persona(s)</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Formulario -->
-        <div class="card-body p-4 p-md-5">
-          <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()" class="row g-4">
-            
-            <div class="col-12">
-              <h6 class="text-uppercase text-muted fw-bold fs-7 tracking-wider mb-3">Información del Titular</h6>
-            </div>
-
-            <div class="col-md-6">
-              <label for="guestFirstName" class="form-label small fw-semibold text-secondary">Nombre</label>
-              <div class="input-group">
-                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-person"></i></span>
-                <input type="text" id="guestFirstName" class="form-control border-start-0 ps-0" formControlName="guestFirstName" placeholder="Ej: Juan">
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <label for="guestLastName" class="form-label small fw-semibold text-secondary">Apellido</label>
-              <div class="input-group">
-                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-person-badge"></i></span>
-                <input type="text" id="guestLastName" class="form-control border-start-0 ps-0" formControlName="guestLastName" placeholder="Ej: Pérez">
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <label for="guestPhone" class="form-label small fw-semibold text-secondary">Teléfono de Contacto</label>
-              <div class="input-group">
-                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-telephone"></i></span>
-                <input type="text" id="guestPhone" class="form-control border-start-0 ps-0" formControlName="guestPhone" placeholder="Ej: +54 9 223 1234567">
-              </div>
-            </div>
-
-            <div class="col-12 pt-2">
-              <h6 class="text-uppercase text-muted fw-bold fs-7 tracking-wider mb-3">Adicionales</h6>
-              <label for="observation" class="form-label small fw-semibold text-secondary">Observaciones (Opcional)</label>
-              <textarea id="observation" class="form-control" formControlName="observation" rows="3" placeholder="Aclaraciones, horarios estimados de llegada o pedidos especiales..."></textarea>
-            </div>
-
-            <!-- Botones de Acción -->
-            <div class="col-12 d-flex justify-content-between align-items-center pt-4 border-top mt-4">
-              <button type="button" class="btn btn-light border px-4 py-2 text-secondary fw-medium" routerLink="/dashboard/bookings/disponibilidad">
-                <i class="bi bi-arrow-left me-1"></i> Volver
-              </button>
-              <button type="submit" class="btn btn-purple px-4 py-2 fw-semibold shadow-sm d-flex align-items-center" [disabled]="bookingForm.invalid || loading">
-                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                <span>{{ loading ? 'Guardando reserva...' : 'Confirmar Creación de Reserva' }}</span>
-              </button>
-            </div>
-
-          </form>
+      <div class="col-md-6">
+        <label for="guestPhone" class="form-label">Teléfono de Contacto *</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
+          <input type="text" id="guestPhone" class="form-control" formControlName="guestPhone" placeholder="Ej: +54 9 223 1234567">
         </div>
       </div>
 
     </div>
-  </div>
+
+    <hr class="section-divider mb-4">
+
+    <h4 class="form-section-title">Adicionales</h4>
+    <div class="row g-3 mb-4">
+      <div class="col-12">
+        <label for="observation" class="form-label">Observaciones (Opcional)</label>
+        <textarea id="observation" class="form-control custom-textarea" formControlName="observation" rows="3" placeholder="Aclaraciones, horarios estimados de llegada o pedidos especiales..."></textarea>
+      </div>
+    </div>
+
+    <hr class="section-divider mb-4">
+
+    <!-- Botones de Acción -->
+    <div class="form-actions-container">
+      <button type="button" class="btn btn-secondary" routerLink="/dashboard/bookings/disponibilidad">
+        <i class="fa-solid fa-arrow-left me-1"></i> Volver
+      </button>
+      <button type="submit" class="btn btn-success" [disabled]="bookingForm.invalid || loading">
+        <i class="fa-solid" [ngClass]="loading ? 'fa-spinner fa-spin' : 'fa-check'"></i> 
+        {{ loading ? 'Guardando reserva...' : 'Confirmar Creación de Reserva' }}
+      </button>
+    </div>
+
+  </form>
 </div>

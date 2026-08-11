@@ -1,76 +1,99 @@
 <div class="container mt-4">
-  <h2>Consultar Disponibilidad de Habitaciones</h2>
-  <hr>
+  <h2><i class="fa-solid fa-search me-2"></i> Consultar Disponibilidad de Habitaciones</h2>
+  <p class="text-subtitle mb-4">Selecciona las fechas y la cantidad de huéspedes para buscar habitaciones disponibles en el sistema.</p>
+  <hr class="mb-4">
 
-  <!-- Formulario de Consulta -->
-  <form [formGroup]="availabilityForm" (ngSubmit)="onSearch()" class="row g-3 bg-light p-3 rounded shadow-sm mb-4">
-    <div class="col-md-4">
-      <label for="checkIn" class="form-label">Fecha de Check-In</label>
-      <input type="date" id="checkIn" class="form-control" formControlName="checkIn">
-      <div *ngIf="availabilityForm.get('checkIn')?.touched && availabilityForm.get('checkIn')?.invalid" class="text-danger small mt-1">
-        El check-in es obligatorio.
+  <!-- Mensajes de Error o Carga -->
+  <div *ngIf="errorMessage" class="alert alert-danger mb-4">
+    <i class="fa-solid fa-triangle-exclamation me-2"></i> {{ errorMessage }}
+  </div>
+  
+  <div *ngIf="loading" class="alert alert-info mb-4">
+    <i class="fa-solid fa-spinner fa-spin me-2"></i> Buscando habitaciones disponibles...
+  </div>
+
+  <!-- Formulario de Consulta con Estilo Glassmorphism -->
+  <form [formGroup]="availabilityForm" (ngSubmit)="onSearch()" class="glass-form mb-5">
+    <h4 class="form-section-title mb-3">Criterios de Búsqueda</h4>
+    
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <label for="checkIn" class="form-label">Fecha de Check-In *</label>
+        <input type="date" id="checkIn" class="form-control" formControlName="checkIn">
+        <div *ngIf="availabilityForm.get('checkIn')?.touched && availabilityForm.get('checkIn')?.invalid" class="text-danger small mt-1">
+          El check-in es obligatorio.
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <label for="checkOut" class="form-label">Fecha de Check-Out *</label>
+        <input type="date" id="checkOut" class="form-control" formControlName="checkOut">
+        <div *ngIf="availabilityForm.get('checkOut')?.touched && availabilityForm.get('checkOut')?.invalid" class="text-danger small mt-1">
+          El check-out es obligatorio.
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <label for="guestCount" class="form-label">Cantidad de Personas *</label>
+        <input type="number" id="guestCount" class="form-control" formControlName="guestCount" min="1" placeholder="Ej: 2">
+        <div *ngIf="availabilityForm.get('guestCount')?.touched && availabilityForm.get('guestCount')?.invalid" class="text-danger small mt-1">
+          Debe ingresar al menos 1 huésped.
+        </div>
       </div>
     </div>
 
-    <div class="col-md-4">
-      <label for="checkOut" class="form-label">Fecha de Check-Out</label>
-      <input type="date" id="checkOut" class="form-control" formControlName="checkOut">
-      <div *ngIf="availabilityForm.get('checkOut')?.touched && availabilityForm.get('checkOut')?.invalid" class="text-danger small mt-1">
-        El check-out es obligatorio.
-      </div>
-    </div>
+    <hr class="section-divider mb-4">
 
-    <div class="col-md-4">
-      <label for="guestCount" class="form-label">Cantidad de Personas</label>
-      <input type="number" id="guestCount" class="form-control" formControlName="guestCount" min="1">
-      <div *ngIf="availabilityForm.get('guestCount')?.touched && availabilityForm.get('guestCount')?.invalid" class="text-danger small mt-1">
-        Debe ingresar al menos 1 huésped.
-      </div>
-    </div>
-
-    <div class="col-12 d-flex justify-content-between align-items-center">
-      <button type="submit" class="btn btn-primary" [disabled]="loading">
-        {{ loading ? 'Consultando...' : 'Consultar Disponibilidad' }}
-      </button>
+    <!-- Acciones -->
+    <div class="form-actions-container">
       <button type="button" class="btn btn-secondary" routerLink="/dashboard/bookings">
         Volver a Reservas
+      </button>
+      <button type="submit" class="btn btn-success" [disabled]="loading">
+        <i class="fa-solid" [ngClass]="loading ? 'fa-spinner fa-spin' : 'fa-magnifying-glass'"></i> 
+        {{ loading ? 'Consultando...' : 'Consultar Disponibilidad' }}
       </button>
     </div>
   </form>
 
-  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-  <div *ngIf="loading" class="alert alert-info">Buscando habitaciones disponibles...</div>
-
   <!-- Lista de Habitaciones Disponibles -->
-  <div *ngIf="!loading && hasSearched">
-    <h3>Habitaciones Disponibles</h3>
-    <p class="text-muted">Haz clic sobre la habitación que deseas reservar para avanzar.</p>
+  <div *ngIf="!loading && hasSearched" class="results-section">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h3 class="results-title mb-1">Habitaciones Disponibles</h3>
+        <p class="text-subtitle">Haz clic sobre la habitación que deseas reservar para avanzar.</p>
+      </div>
+    </div>
     
-    <table *ngIf="availableRooms.length > 0" class="table table-striped table-hover align-middle">
-      <thead class="table-dark">
-        <tr>
-          <th>ID</th>
-          <th>Nro. Habitación</th>
-          <th>Tipo</th>
-          <th>Capacidad</th>
-          <th>Precio por Noche</th>
-          <th>Total Est. ({{ calculateDays() }} noches)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let room of availableRooms" (click)="selectRoomAndRedirect(room)" style="cursor: pointer;" title="Haz clic para seleccionar esta habitación">
-          <td>{{ room.id }}</td>
-          <td><strong>#{{ room.number }}</strong></td>
-          <td>{{ room.roomTypeName }}</td>
-          <td>{{ room.capacity }} pers.</td>
-          <td>${{ room.pricePerNight | number:'1.2-2' }}</td>
-          <td><strong>${{ calculateTotalPrice(room.pricePerNight) | number:'1.2-2' }}</strong></td>
-        </tr>
-      </tbody>
-    </table>
+    <div *ngIf="availableRooms.length > 0" class="glass-table-container">
+      <div class="table-responsive mb-0">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th class="ps-4">ID</th>
+              <th>Nro. Habitación</th>
+              <th>Tipo</th>
+              <th>Capacidad</th>
+              <th>Precio por Noche</th>
+              <th class="text-end pe-4">Total Est. ({{ calculateDays() }} noches)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let room of availableRooms" (click)="selectRoomAndRedirect(room)" style="cursor: pointer;" title="Haz clic para seleccionar esta habitación">
+              <td class="ps-4 text-secondary">#{{ room.id }}</td>
+              <td><strong class="text-main">#{{ room.number }}</strong></td>
+              <td class="text-subtitle">{{ room.roomTypeName }}</td>
+              <td><span class="badge badge-outline">{{ room.capacity }} pers.</span></td>
+              <td class="text-secondary">${{ room.pricePerNight | number:'1.2-2' }}</td>
+              <td class="text-end pe-4 fw-bold text-main">${{ calculateTotalPrice(room.pricePerNight) | number:'1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-    <div *ngIf="availableRooms.length === 0" class="alert alert-warning">
-      No hay habitaciones disponibles para los criterios seleccionados.
+    <div *ngIf="availableRooms.length === 0" class="alert alert-warning text-center py-4">
+      <i class="fa-solid fa-circle-exclamation me-2"></i> No hay habitaciones disponibles para los criterios seleccionados.
     </div>
   </div>
 </div>

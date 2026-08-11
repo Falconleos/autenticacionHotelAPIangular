@@ -1,21 +1,45 @@
+:host {
+  background-color: transparent !important;
+  display: block;
+  min-height: 100vh;
+}
+
 .container {
-  padding: 0.5rem;
+  padding: 4px;
 }
 
 .container h2 {
-  font-size: 1.5rem;
+  font-size: 24px;
   font-weight: 600;
-  color: #2c3e50;
+  color: #f8fafc;
   margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.container h2 i {
+  color: #818cf8;
+}
+
+.text-subtitle {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.text-main {
+  color: #f8fafc;
+}
+
+.text-success-price {
+  color: #34d399;
+  font-size: 1.05rem;
 }
 
 .container hr {
-  border-color: #e2e8f0;
-  margin-top: 1rem;
-  margin-bottom: 1.5rem;
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
-/* --- Cards para Ítems en Fila --- */
+/* --- Cards para Ítems en Fila con Glassmorphism --- */
 .row {
   display: flex;
   flex-wrap: wrap;
@@ -31,97 +55,155 @@
   margin-bottom: 1rem;
 }
 
-.card {
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background-color: #ffffff;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.glass-card {
+  background: rgba(15, 23, 42, 0.65);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   height: 100%;
 }
 
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02) !important;
+.glass-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+  border-color: rgba(129, 140, 248, 0.3);
 }
 
 .card-body {
-  padding: 1rem;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 .card-title {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
-  color: #2c3e50 !important;
+  color: #f8fafc !important;
 }
 
 .card-text {
-  color: #475569;
+  color: #cbd5e1;
   font-size: 0.85rem;
 }
 
+/* --- Badges Translúcidos --- */
 .badge {
   font-weight: 500;
   padding: 0.4em 0.65em;
   font-size: 0.75rem;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
-.badge.bg-info {
-  background-color: #e0f2fe !important;
-  color: #0369a1 !important;
+.badge-info-glass {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #93c5fd !important;
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
-.badge.bg-secondary {
-  background-color: #f1f5f9 !important;
-  color: #475569 !important;
-  border: 1px solid #e2e8f0;
+.badge-secondary-glass {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: #cbd5e1 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* --- Botones --- */
 .btn {
   font-weight: 500;
   font-size: 0.8rem;
-  border-radius: 6px;
+  border-radius: 8px;
   transition: all 0.2s ease;
+  padding: 0.4rem 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
 .btn-primary {
-  background-color: #3498db;
-  border-color: #3498db;
+  background: rgba(59, 130, 246, 0.25);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #93c5fd;
 }
 
-.btn-primary:hover {
-  background-color: #2980b9;
-  border-color: #2980b9;
+.btn-primary:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.4);
+  color: #ffffff;
+  border-color: rgba(59, 130, 246, 0.6);
 }
 
 .btn-warning {
-  background-color: #f59e0b;
-  border-color: #f59e0b;
-  color: #ffffff;
+  background: rgba(245, 158, 11, 0.25);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fcd34d;
 }
 
-.btn-warning:hover {
-  background-color: #d97706;
-  border-color: #d97706;
+.btn-warning:hover:not(:disabled) {
+  background: rgba(245, 158, 11, 0.4);
   color: #ffffff;
+  border-color: rgba(245, 158, 11, 0.6);
 }
 
 .btn-danger {
-  background-color: #ef4444;
-  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.25);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
 }
 
-.btn-danger:hover {
-  background-color: #dc2626;
-  border-color: #dc2626;
+.btn-danger:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.4);
+  color: #ffffff;
+  border-color: rgba(239, 68, 68, 0.6);
 }
 
-.alert {
-  border-radius: 8px;
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.05);
+  color: #64748b;
+}
+
+/* --- Alertas Glass --- */
+.alert-danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
   font-size: 0.95rem;
-  border: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.alert-info {
+  background: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.alert-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fcd34d;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }

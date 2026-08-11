@@ -10,7 +10,8 @@ import { RoomDtoResponse } from '../../models/room.model';
   selector: 'app-availability',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './availability-component.html'
+  templateUrl: './availability-component.html',
+  styleUrls: ['./availability-component.css']
 })
 export class AvailabilityComponent implements OnInit {
   availabilityForm!: FormGroup;

@@ -9,7 +9,8 @@ import { UserDtoRequestCreation, RoleType } from '../../models/user-creation.mod
   selector: 'app-user-form',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './user-form-component.html'
+  templateUrl: './user-form-component.html',
+  styleUrls: ['./user-form-component.css'] // <-- Agrega esta línea (o styleUrl según tu versión de Angular)
 })
 export class UserFormComponent {
   formData = {

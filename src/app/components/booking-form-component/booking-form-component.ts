@@ -9,7 +9,8 @@ import { BookingStateService } from '../../services/booking-state-service';
   selector: 'app-booking-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './booking-form-component.html'
+  templateUrl: './booking-form-component.html',
+  styleUrls: ['./booking-form-component.css']
 })
 export class BookingFormComponent implements OnInit {
   bookingForm!: FormGroup;

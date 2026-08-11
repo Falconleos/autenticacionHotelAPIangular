@@ -1,85 +1,159 @@
+:host {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+}
+
+/* Contenedor general que asegura la cobertura total de pantalla y el fondo oscuro con degradado */
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background-color: #f4f7f6;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  background-color: #0f172a !important;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(30, 41, 59, 0.9) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(49, 46, 129, 0.6) 0px, transparent 50%) !important;
 }
 
+/* Tarjeta principal con efecto Glassmorphism */
 .login-card {
-  background: white;
+  background: rgba(15, 23, 42, 0.65);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 2.5rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
 }
 
 .login-card h2 {
-  margin-bottom: 0.5rem;
-  color: #333;
+  margin-bottom: 0.25rem;
+  color: #f8fafc;
+  font-size: 24px;
+  font-weight: 600;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card h2 i {
+  color: #818cf8;
 }
 
 .subtitle {
-  color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 1.5rem;
+  color: #94a3b8;
+  font-size: 13px;
+  margin-bottom: 2rem;
   text-align: center;
 }
 
-.form-group {
-  margin-bottom: 1.2rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #444;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #007bff;
-}
-
-.error-alert {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 0.75rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.btn-login {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
+/* Etiquetas del formulario */
+.form-label {
+  color: #94a3b8;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 12px;
   font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  display: block;
 }
 
-.btn-login:disabled {
-  background-color: #b0c4de;
+/* Input Groups e Iconos */
+.input-group {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.input-group-text {
+  background: rgba(15, 23, 42, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-right: none !important;
+  color: #94a3b8 !important;
+  padding: 10px 16px;
+}
+
+.input-group .form-control {
+  border-left: none !important;
+}
+
+/* Inputs */
+.form-control {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+  border-radius: 10px;
+  padding: 10px 16px;
+  height: 44px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.form-control:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(129, 140, 248, 0.5);
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.25);
+  outline: none;
+}
+
+/* Alertas estilo Glass */
+.alert {
+  border-radius: 10px;
+  font-size: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  padding: 1rem;
+}
+
+.alert-danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Botón de Ingreso con estilo Glass Principal */
+.btn-primary {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(79, 70, 229, 0.2));
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(129, 140, 248, 0.3);
+  color: #ffffff !important;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 10px;
+  padding: 12px;
+  height: 46px;
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.6), rgba(79, 70, 229, 0.4));
+  border-color: rgba(129, 140, 248, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.4;
   cursor: not-allowed;
-}
-
-.btn-login:hover:not(:disabled) {
-  background-color: #0056b3;
 }

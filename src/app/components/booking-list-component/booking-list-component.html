@@ -1,11 +1,12 @@
-<div class="container-fluid px-4 py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="container-fluid px-4 py-4 app-container">
+  <!-- Encabezado de la Sección -->
+  <div class="d-flex justify-content-between align-items-center mb-4 header-section">
     <div>
-      <h2 class="fw-bold text-dark mb-1">Gestión de Reservas</h2>
-      <p class="text-muted small mb-0">Panel de control de reservas y asignaciones del hotel.</p>
+      <h2 class="fw-bold text-main mb-1"><i class="bi bi-calendar-check me-2"></i>Gestión de Reservas</h2>
+      <p class="text-secondary small mb-0">Panel de control de reservas y asignaciones del hotel.</p>
     </div>
     <button 
-      class="btn btn-purple px-4 py-2 shadow-sm" 
+      class="btn btn-primary px-4 py-2 shadow-sm" 
       [routerLink]="canModify ? '/dashboard/bookings/disponibilidad' : null" 
       [disabled]="!canModify">
       <i class="bi bi-search me-1"></i> Consultar Disponibilidad
@@ -16,10 +17,10 @@
   <div *ngIf="loading" class="alert alert-info border-0 shadow-sm py-3">Cargando registros...</div>
   <div *ngIf="errorMessage" class="alert alert-danger border-0 shadow-sm py-3">{{ errorMessage }}</div>
 
-  <!-- Tabla de datos (Estilo Status Board) -->
+  <!-- Tabla de datos (Estilo Glassmorphism Oscuro) -->
   <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden" *ngIf="!loading && !errorMessage && bookings.length > 0">
-    <div class="card-header bg-white py-3 px-4 border-0 d-flex justify-content-between align-items-center">
-      <h5 class="fw-bold text-dark mb-0">Status Board</h5>
+    <div class="card-header bg-transparent py-3 px-4 border-0 d-flex justify-content-between align-items-center">
+      <h5 class="fw-bold text-main mb-0">Status Board</h5>
     </div>
     <div class="table-responsive mb-0">
       <table class="table table-hover align-middle mb-0">
@@ -41,49 +42,49 @@
           <tr *ngFor="let booking of bookings">
             <td class="ps-4 fw-semibold text-secondary">#{{ booking.id }}</td>
             <td>
-              <span class="fw-semibold text-dark">{{ booking.guestFirstName }} {{ booking.guestLastName }}</span>
+              <span class="fw-semibold text-main">{{ booking.guestFirstName }} {{ booking.guestLastName }}</span>
             </td>
-            <td class="text-muted">{{ booking.guestPhone || '-' }}</td>
+            <td class="text-secondary">{{ booking.guestPhone || '-' }}</td>
             <td>
-              <span *ngIf="booking.room" class="badge bg-light text-dark border px-2 py-1">Hab. #{{ booking.room.number }}</span>
-              <span *ngIf="!booking.room" class="text-muted small">N/A</span>
+              <span *ngIf="booking.room" class="badge badge-outline px-2 py-1">Hab. #{{ booking.room.number }}</span>
+              <span *ngIf="!booking.room" class="text-secondary small">N/A</span>
             </td>
-            <td class="text-muted small">{{ booking.checkIn }}</td>
-            <td class="text-muted small">{{ booking.checkOut }}</td>
+            <td class="text-secondary small">{{ booking.checkIn }}</td>
+            <td class="text-secondary small">{{ booking.checkOut }}</td>
             <td class="text-center">{{ booking.guestCount }}</td>
-            <td class="text-end fw-bold text-dark">${{ booking.totalPrice | number:'1.2-2' }}</td>
+            <td class="text-end fw-bold text-main">${{ booking.totalPrice | number:'1.2-2' }}</td>
             <td class="text-center">
               <span class="badge rounded-pill px-3 py-2" [ngClass]="{
-                'bg-warning-soft text-warning-dark': booking.state === 'PENDING',
-                'bg-success-soft text-success-dark': booking.state === 'CONFIRMED' || booking.state === 'CHECKED_IN',
-                'bg-secondary-soft text-secondary-dark': booking.state === 'CONCLUDED',
-                'bg-danger-soft text-danger-dark': booking.state === 'CANCELLED' || booking.state === 'NO_SHOW'
+                'bg-warning-soft text-warning': booking.state === 'PENDING',
+                'bg-success-soft text-success': booking.state === 'CONFIRMED' || booking.state === 'CHECKED_IN',
+                'bg-secondary-soft text-secondary': booking.state === 'CONCLUDED',
+                'bg-danger-soft text-danger': booking.state === 'CANCELLED' || booking.state === 'NO_SHOW'
               }">
-                ● {{ booking.state }}
+                <span class="status-dot me-1"></span> {{ booking.state }}
               </span>
             </td>
             <td class="text-center pe-4">
               <div class="d-flex justify-content-center gap-1">
                 <button 
-                  class="btn btn-success btn-sm px-2 py-1" 
+                  class="btn btn-warning btn-sm px-2 py-1" 
                   (click)="confirmBooking(booking.id)" 
                   [disabled]="!canModify || booking.state === 'CHECKED_IN' || booking.state === 'CONFIRMED'"
                   title="Confirmar">
-                  Confirmar
+                  <i class="bi bi-check-lg"></i> Confirmar
                 </button>
                 <button 
-                  class="btn btn-info btn-sm text-white px-2 py-1" 
+                  class="btn btn-dark-solid btn-sm px-2 py-1" 
                   (click)="openPaymentModal(booking)"
                   [disabled]="!canModify"
                   title="Señas">
-                  Señas
+                  <i class="bi bi-cash-coin"></i> Señas
                 </button>
                 <button 
                   class="btn btn-danger btn-sm px-2 py-1" 
                   (click)="cancelBooking(booking.id)" 
                   [disabled]="!canModify || booking.state === 'CHECKED_IN' || booking.state === 'CANCELLED'"
                   title="Cancelar">
-                  Cancelar
+                  <i class="bi bi-x-lg"></i> Cancelar
                 </button>
               </div>
             </td>
@@ -98,20 +99,20 @@
     No se encontraron reservas registradas en el sistema.
   </div>
 
-  <!-- PANEL DE GESTIÓN DE SEÑAS -->
+  <!-- PANEL DE GESTIÓN DE SEÑAS (Adaptado a Oscuro) -->
   <div *ngIf="selectedBookingForPayment" class="card border-0 shadow-lg rounded-4 mt-4 overflow-hidden">
-    <div class="card-header bg-purple text-white d-flex justify-content-between align-items-center py-3 px-4">
+    <div class="card-header bg-transparent text-white d-flex justify-content-between align-items-center py-3 px-4 border-bottom border-light border-opacity-10">
       <div>
         <h5 class="mb-0 fw-bold text-white">Gestión de Señas</h5>
-        <small class="text-white-50">Reserva #{{ selectedBookingForPayment.id }} — Titular: {{ selectedBookingForPayment.guestFirstName }} {{ selectedBookingForPayment.guestLastName }}</small>
+        <small class="text-secondary">Reserva #{{ selectedBookingForPayment.id }} — Titular: {{ selectedBookingForPayment.guestFirstName }} {{ selectedBookingForPayment.guestLastName }}</small>
       </div>
       <button class="btn-close btn-close-white shadow-none" (click)="closePaymentModal()"></button>
     </div>
-    <div class="card-body p-4 bg-light">
+    <div class="card-body p-4">
       <div class="row g-4">
         <!-- Formulario para agregar seña -->
-        <div class="col-lg-5 bg-white p-4 rounded-4 shadow-sm border-0">
-          <h6 class="fw-bold text-purple mb-3">Registrar Nueva Seña</h6>
+        <div class="col-lg-5 card-form-section p-4 rounded-4 shadow-sm border border-light border-opacity-10">
+          <h6 class="fw-bold text-main mb-3">Registrar Nueva Seña</h6>
           <div class="mb-3">
             <label class="form-label small fw-semibold text-secondary">Monto ($)</label>
             <input type="number" class="form-control" [(ngModel)]="newPaymentAmount" placeholder="Ej: 5000">
@@ -129,7 +130,7 @@
             <label class="form-label small fw-semibold text-secondary">Comprobante / Referencia</label>
             <input type="text" class="form-control" [(ngModel)]="newPaymentReference" placeholder="Número de voucher o transferencia">
           </div>
-          <button class="btn btn-purple w-100 py-2 fw-semibold shadow-sm" (click)="submitBookingPayment()">Guardar Seña</button>
+          <button class="btn btn-primary w-100 py-2 fw-semibold shadow-sm" (click)="submitBookingPayment()">Guardar Seña</button>
         </div>
 
         <!-- Listado de señas existentes -->
@@ -137,10 +138,10 @@
           <h6 class="fw-bold text-secondary mb-3">Señas Registradas</h6>
           <div *ngIf="loadingPayments" class="alert alert-info py-2 border-0">Cargando pagos...</div>
           
-          <div class="card border-0 shadow-sm rounded-4 flex-grow-1 overflow-hidden bg-white" *ngIf="!loadingPayments && bookingPayments.length > 0">
+          <div class="card border-0 shadow-sm rounded-4 flex-grow-1 overflow-hidden" *ngIf="!loadingPayments && bookingPayments.length > 0">
             <div class="table-responsive mb-0">
               <table class="table table-sm align-middle mb-0">
-                <thead class="table-light text-muted">
+                <thead>
                   <tr>
                     <th class="ps-4 py-3">Fecha</th>
                     <th class="py-3">Método</th>
@@ -150,17 +151,17 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let p of bookingPayments">
-                    <td class="ps-4 text-muted small">{{ p.paymentDate | date:'short' }}</td>
-                    <td><span class="badge bg-light text-dark border">{{ p.paymentMethod }}</span></td>
-                    <td class="text-muted small">{{ p.transactionReference || '-' }}</td>
-                    <td class="text-end pe-4 fw-bold text-dark">${{ p.amount | number:'1.2-2' }}</td>
+                    <td class="ps-4 text-secondary small">{{ p.paymentDate | date:'short' }}</td>
+                    <td><span class="badge badge-outline">{{ p.paymentMethod }}</span></td>
+                    <td class="text-secondary small">{{ p.transactionReference || '-' }}</td>
+                    <td class="text-end pe-4 fw-bold text-main">${{ p.amount | number:'1.2-2' }}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
 
-          <div *ngIf="!loadingPayments && bookingPayments.length === 0" class="alert alert-light border shadow-sm py-4 text-center text-muted rounded-4 mb-0">
+          <div *ngIf="!loadingPayments && bookingPayments.length === 0" class="alert alert-warning border-0 shadow-sm py-4 text-center text-secondary rounded-4 mb-0">
             Esta reserva aún no registra señas previas.
           </div>
         </div>

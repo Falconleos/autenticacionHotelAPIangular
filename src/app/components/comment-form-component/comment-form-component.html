@@ -1,41 +1,75 @@
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>{{ isEditMode ? 'Editar Comentario' : 'Nuevo Comentario' }}</h2>
-    <button class="btn btn-outline-secondary btn-sm" (click)="goBack()">Volver</button>
+<div class="container mt-4 mb-5" style="max-width: 650px;">
+  <div class="d-flex justify-content-between align-items-center mb-4 header-section">
+    <h2>
+      <i class="fa-solid" [ngClass]="isEditMode ? 'fa-pen-to-square' : 'fa-circle-plus'"></i>
+      {{ isEditMode ? 'Editar Comentario' : 'Nuevo Comentario' }}
+    </h2>
+    <button class="btn btn-secondary btn-sm" (click)="goBack()">
+      <i class="fa-solid fa-arrow-left me-1"></i> Volver
+    </button>
   </div>
-  <hr>
+  <hr class="mb-4">
 
-  <div *ngIf="loading" class="alert alert-info">Cargando...</div>
-  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  <!-- Mensajes de carga o error -->
+  <div *ngIf="loading" class="alert alert-info mb-4">
+    <i class="fa-solid fa-spinner fa-spin me-2"></i> Cargando...
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger mb-4">
+    <i class="fa-solid fa-triangle-exclamation me-2"></i> {{ errorMessage }}
+  </div>
 
-  <div *ngIf="!isEditMode && !checkInId && !loading" class="card shadow-sm mb-4">
-    <div class="card-header bg-secondary text-white">Selecciona tu estadía</div>
-    <div class="card-body">
-      <select class="form-select" [(ngModel)]="selectedCheckInId">
-        <option [ngValue]="null" disabled>-- Seleccione una estadía --</option>
-        <!-- Corregido para evitar propiedades que no existen en el DTO de Check-in -->
-        <option *ngFor="let c of availableCheckIns" [ngValue]="c.id">
-            Habitación {{ c.booking?.room?.number }} ({{ c.booking?.room?.roomTypeName }}) - Huésped: {{ c.booking?.guestFirstName }} {{ c.booking?.guestLastName }}
-        </option>
-      </select>
+  <!-- Selección de Estadía (Estilo Glass) -->
+  <div *ngIf="!isEditMode && !checkInId && !loading" class="glass-card mb-4">
+    <div class="glass-card-header">
+      <i class="fa-solid fa-bed me-2"></i> Selecciona tu estadía
+    </div>
+    <div class="card-body p-4">
+      <div class="mb-0">
+        <label class="form-label">Estadía disponible *</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="fa-solid fa-suitcase"></i></span>
+          <select class="form-control custom-select" [(ngModel)]="selectedCheckInId">
+            <option [ngValue]="null" disabled>-- Seleccione una estadía --</option>
+            <option *ngFor="let c of availableCheckIns" [ngValue]="c.id">
+              Habitación {{ c.booking?.room?.number }} ({{ c.booking?.room?.roomTypeName }}) - Huésped: {{ c.booking?.guestFirstName }} {{ c.booking?.guestLastName }}
+            </option>
+          </select>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="card shadow-sm" *ngIf="!loading">
-    <div class="card-body">
-      <div class="mb-3">
-        <label class="form-label">Valoración</label>
-        <select class="form-select" [(ngModel)]="rating">
-          <option *ngFor="let r of [1,2,3,4,5]" [value]="r">{{r}} - {{r === 5 ? 'Excelente' : r === 1 ? 'Malo' : 'Estándar'}}</option>
+  <!-- Formulario Principal (Estilo Glass) -->
+  <div class="glass-form" *ngIf="!loading">
+    <div class="mb-4">
+      <label class="form-label">Valoración *</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa-solid fa-star"></i></span>
+        <select class="form-control custom-select" [(ngModel)]="rating">
+          <option *ngFor="let r of [1,2,3,4,5]" [value]="r">
+            {{r}} - {{r === 5 ? 'Excelente' : r === 1 ? 'Malo' : 'Estándar'}}
+          </option>
         </select>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Tu Comentario</label>
-        <textarea class="form-control" rows="4" [(ngModel)]="content"></textarea>
-      </div>
-      <button class="btn btn-primary w-100" (click)="saveComment()" [disabled]="!content.trim() || (!checkInId && !selectedCheckInId)">
-        {{ isEditMode ? 'Guardar Cambios' : 'Publicar Comentario' }}
-      </button>
     </div>
+
+    <div class="mb-4">
+      <label class="form-label">Tu Comentario *</label>
+      <div class="input-group align-items-start">
+        <span class="input-group-text textarea-icon-fix"><i class="fa-solid fa-comment-dots"></i></span>
+        <textarea 
+          class="form-control custom-textarea" 
+          rows="4" 
+          [(ngModel)]="content" 
+          placeholder="Escribe aquí tu opinión detallada..."></textarea>
+      </div>
+    </div>
+
+    <button 
+      class="btn btn-primary w-100" 
+      (click)="saveComment()" 
+      [disabled]="!content.trim() || (!checkInId && !selectedCheckInId)">
+      <i class="fa-solid fa-check me-2"></i> {{ isEditMode ? 'Guardar Cambios' : 'Publicar Comentario' }}
+    </button>
   </div>
 </div>
