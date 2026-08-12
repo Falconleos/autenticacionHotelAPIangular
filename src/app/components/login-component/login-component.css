@@ -36,7 +36,7 @@
 }
 
 .login-card h2 {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.75rem; /* Separación ampliada del título respecto al subtítulo */
   color: #f8fafc;
   font-size: 24px;
   font-weight: 600;
@@ -44,6 +44,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10px; /* Separa el icono del texto del título */
 }
 
 .login-card h2 i {
@@ -53,8 +54,18 @@
 .subtitle {
   color: #94a3b8;
   font-size: 13px;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem; /* Mayor respiro antes de empezar con los inputs */
   text-align: center;
+}
+
+/* Separación personalizada entre cada campo del formulario */
+.field-spacing {
+  margin-bottom: 1.5rem;
+}
+
+/* Espaciado superior extra para separar el botón de entrar */
+.btn-submit-spacing {
+  margin-top: 1rem;
 }
 
 /* Etiquetas del formulario */
@@ -69,8 +80,10 @@
   display: block;
 }
 
-/* Input Groups e Iconos */
+/* Input Groups e Iconos alineados */
 .input-group {
+  display: flex;
+  align-items: stretch;
   border-radius: 10px;
   overflow: hidden;
 }
@@ -79,12 +92,21 @@
   background: rgba(15, 23, 42, 0.9) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-right: none !important;
+  border-top-left-radius: 10px !important;
+  border-bottom-left-radius: 10px !important;
   color: #94a3b8 !important;
   padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .input-group .form-control {
   border-left: none !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-top-right-radius: 10px !important;
+  border-bottom-right-radius: 10px !important;
 }
 
 /* Inputs */
@@ -92,7 +114,6 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #f8fafc;
-  border-radius: 10px;
   padding: 10px 16px;
   height: 44px;
   font-size: 14px;
@@ -145,6 +166,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  width: 100%;
 }
 
 .btn-primary:hover:not(:disabled) {
