@@ -1,9 +1,9 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2><i class="fa-solid fa-door-open me-2"></i> Gestión de Habitaciones y Tipos</h2>
+    <h2><i class="fa-solid fa-door-open me-2">&nbsp;</i> Gestión de Habitaciones y Tipos</h2>
     <div>
       <button 
-        class="btn btn-success" 
+        class="btn btn-success marginExtra" 
         [routerLink]="isAdmin ? '/dashboard/room-types/nuevo' : null" 
         [disabled]="!isAdmin">
         <i class="fa-solid fa-plus me-1"></i> Nuevo Tipo de Habitación
@@ -39,14 +39,14 @@
                 <i class="fa-solid fa-plus me-1"></i> Crear Habitación
               </button>
               
-              <div class="d-flex justify-content-between gap-2" *ngIf="isAdmin">
+              <div class="d-flex justify-content-between gap-2 marginVertical" *ngIf="isAdmin">
                 <button 
-                  class="btn btn-warning btn-sm w-50" 
+                  class="btn btn-warning btn-sm w-50 " 
                   [routerLink]="['/dashboard/room-types/editar', rType.id]">
                   <i class="fa-solid fa-pen-to-square"></i> Editar
                 </button>
                 <button 
-                  class="btn btn-danger btn-sm w-50" 
+                  class="btn btn-danger btn-sm w-50 marginLeft" 
                   (click)="deleteRoomType(rType.id)">
                   <i class="fa-solid fa-trash"></i> Eliminar
                 </button>
@@ -109,13 +109,13 @@
             <td class="text-end pe-4">
               <div class="btn-group btn-group-sm" role="group">
                 <button 
-                  class="btn btn-warning me-1" 
+                  class="btn btn-warning me-1"  
                   [routerLink]="isAdmin ? ['/dashboard/rooms/editar', room.id] : null" 
                   [disabled]="!isAdmin" title="Editar habitación">
-                  <i class="fa-solid fa-pen-to-square"></i>
+                  <i class="fa-solid fa-pen-to-square "></i>
                 </button>
                 <button 
-                  class="btn btn-danger" 
+                  class="btn btn-danger marginLeft" 
                   (click)="deleteRoom(room.id)" 
                   [disabled]="!isAdmin" title="Eliminar habitación">
                   <i class="fa-solid fa-trash"></i>

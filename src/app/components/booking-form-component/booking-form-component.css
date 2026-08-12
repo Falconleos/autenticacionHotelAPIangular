@@ -221,3 +221,11 @@
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
+
+.paddingWitdth{
+  padding: 6px 12px
+}
+
+.marginExtra{
+  margin: 20px 0px;
+}

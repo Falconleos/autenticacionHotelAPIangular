@@ -251,3 +251,17 @@ input[type="date"].form-control::-webkit-calendar-picker-indicator {
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
+
+.marginExtra{
+  margin: 6px;
+}
+
+.boxWidth{
+  width: 400px;
+}
+
+.sectionAlign {
+  display: flex;
+  justify-content: flex-start; /* Fuerza los elementos hacia la izquierda */
+  align-items: center;        /* Centra los botones verticalmente si tienen distinta altura */
+}

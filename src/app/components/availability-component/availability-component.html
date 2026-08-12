@@ -18,24 +18,24 @@
     
     <div class="row g-3 mb-4">
       <div class="col-md-4">
-        <label for="checkIn" class="form-label">Fecha de Check-In *</label>
-        <input type="date" id="checkIn" class="form-control" formControlName="checkIn">
+        <label for="checkIn" class="form-label marginExtra">Fecha de Check-In *</label>
+        <input type="date" id="checkIn" class="form-control boxWidth" formControlName="checkIn">
         <div *ngIf="availabilityForm.get('checkIn')?.touched && availabilityForm.get('checkIn')?.invalid" class="text-danger small mt-1">
           El check-in es obligatorio.
         </div>
       </div>
 
       <div class="col-md-4">
-        <label for="checkOut" class="form-label">Fecha de Check-Out *</label>
-        <input type="date" id="checkOut" class="form-control" formControlName="checkOut">
+        <label for="checkOut" class="form-label marginExtra">Fecha de Check-Out *</label>
+        <input type="date" id="checkOut" class="form-control boxWidth" formControlName="checkOut">
         <div *ngIf="availabilityForm.get('checkOut')?.touched && availabilityForm.get('checkOut')?.invalid" class="text-danger small mt-1">
           El check-out es obligatorio.
         </div>
       </div>
 
       <div class="col-md-4">
-        <label for="guestCount" class="form-label">Cantidad de Personas *</label>
-        <input type="number" id="guestCount" class="form-control" formControlName="guestCount" min="1" placeholder="Ej: 2">
+        <label for="guestCount" class="form-label marginExtra">Cantidad de Personas *</label>
+        <input type="number" id="guestCount" class="form-control boxWidth" formControlName="guestCount" min="1" placeholder="Ej: 2">
         <div *ngIf="availabilityForm.get('guestCount')?.touched && availabilityForm.get('guestCount')?.invalid" class="text-danger small mt-1">
           Debe ingresar al menos 1 huésped.
         </div>
@@ -45,7 +45,7 @@
     <hr class="section-divider mb-4">
 
     <!-- Acciones -->
-    <div class="form-actions-container">
+    <div class="form-actions-container sectionAlign">
       <button type="button" class="btn btn-secondary" routerLink="/dashboard/bookings">
         Volver a Reservas
       </button>

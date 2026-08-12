@@ -286,3 +286,15 @@
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
+
+.marginExtra{
+  margin: 12px;
+}
+
+.marginVertical{
+  margin: 12px 0px;
+}
+
+.marginLeft{
+  margin-left: 12px;
+}

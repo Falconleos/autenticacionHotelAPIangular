@@ -192,3 +192,7 @@
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
+
+.marginUpDown{
+  margin: 24px 0px;
+}

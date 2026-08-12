@@ -209,3 +209,20 @@
 .text-success {
   color: #34d399 !important;
 }
+
+.marginUpDown{
+  margin: 24px 0px;
+}
+
+.marginLeft{
+  margin-left: 24px;
+}
+
+.marginBottomExtra{
+  margin-bottom: 24px;
+}
+
+.marginExtra{
+  margin: 12px;
+}
+

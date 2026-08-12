@@ -241,3 +241,16 @@
   color: #fca5a5;
   border-color: rgba(239, 68, 68, 0.3);
 }
+
+.inputExtra{
+  margin: 24px 12px;
+  width: 400px;
+}
+
+.contentPaddin{
+  padding: 24px;
+}
+
+.marginUpDown{
+  margin: 12px 0px ;
+}

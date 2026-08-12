@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login-component/login-component';
 import { DashboardComponent } from './components/dashboard-component/dashboard-component';
+import { LandingPageComponent } from './components/landing-page-component/landing-page-component';
 import { UserListComponent } from './components/user-list-component/user-list-component';
 import { UserFormComponent } from './components/user-form-component/user-form-component';
 import { RoomListComponent } from './components/room-list-component/room-list-component';
@@ -15,17 +16,20 @@ import { CheckInCreateComponent } from './components/check-in-create-component/c
 import { ItemListComponent } from './components/item-list-component/item-list-component';
 import { ItemFormComponent } from './components/item-form-component/item-form-component';
 import { CommentListComponent } from './components/comment-list-component/comment-list-component';
-import { CommentFormComponent } from './components/comment-form-component/comment-form-component'; // <--- 1. Importar el formulario de comentarios
+import { CommentFormComponent } from './components/comment-form-component/comment-form-component';
 import { AccountListComponent } from './components/account-list-component/account-list-component';
 import { PaymentListComponent } from './components/payment-list-component/payment-list-component';
 import { RoomFormComponent } from './components/room-form-component/room-form-component';
 import { RoomAttentionListComponent } from './components/room-attention-list-component/room-attention-list-component';
 import { RoomAttentionFormComponent } from './components/room-attention-form-component/room-attention-form-component';
 import { AccountDetailComponent } from './components/account-detail-component/account-detail-component';
+import { GalleryComponent } from './components/gallery-component/gallery-component';
 import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
+  { path: '', component: LandingPageComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'galeria', component: GalleryComponent },
   { 
     path: 'dashboard', 
     component: DashboardComponent,
@@ -52,8 +56,8 @@ export const routes: Routes = [
       // --- Rutas de Comentarios ---
       { path: 'comments', component: CommentListComponent },
       { path: 'comments/nuevo', component: CommentFormComponent },
-      { path: 'comments/nuevo/:checkInId', component: CommentFormComponent }, // Para cuando se especifica el check-in (ej: desde un huésped)
-      { path: 'comments/editar/:id', component: CommentFormComponent },       // Para editar un comentario existente
+      { path: 'comments/nuevo/:checkInId', component: CommentFormComponent },
+      { path: 'comments/editar/:id', component: CommentFormComponent },      
       
       { path: 'accounts', component: AccountListComponent },
       { path: 'payments', component: PaymentListComponent },
@@ -61,6 +65,5 @@ export const routes: Routes = [
       { path: 'check-ins/:checkInId/servicios/nuevo', component: RoomAttentionFormComponent },
     ]
   },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: '' }
 ];

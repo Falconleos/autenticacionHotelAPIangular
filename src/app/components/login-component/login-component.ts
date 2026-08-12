@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
 import { finalize } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,RouterLink],
   templateUrl: './login-component.html',
   styleUrls: ['./login-component.css']
 })

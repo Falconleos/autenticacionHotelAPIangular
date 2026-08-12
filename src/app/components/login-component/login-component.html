@@ -1,6 +1,12 @@
 <div class="login-container">
   <div class="login-card">
-    <h2><i class="fa-solid fa-hotel"></i> <span>Hotel Management</span></h2>
+    
+    <!-- Botón para volver a la landing -->
+    <a routerLink="/" class="btn-back">
+      <i class="fa-solid fa-arrow-left"></i> Volver
+    </a>
+
+    <h2><i class="fa-solid fa-hotel"></i> <span>Ultimate Hotel Software</span></h2>
     <p class="subtitle">Inicia sesión para continuar</p>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">

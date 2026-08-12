@@ -310,3 +310,24 @@
   align-items: center;
   justify-content: center;
 }
+
+.inputExtra{
+  margin: 24px 12px;
+  width: 400px;
+}
+
+.contentPadding{
+  padding: 12px;
+}
+
+.contentMargin{
+  margin: 12px;
+}
+
+.contentMarginUpDown{
+  margin: 12px 0px;
+}
+
+.contentPaddingRight{
+  margin: 0px 12px 0px 0px;
+}

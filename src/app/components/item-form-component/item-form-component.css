@@ -258,3 +258,8 @@
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
+
+.inputExtra{
+  margin: 24px 12px;
+  width: 400px;
+}

@@ -226,3 +226,7 @@
   color: #fcd34d;
   border-color: rgba(245, 158, 11, 0.3);
 }
+
+.marginExtra{
+  margin: 0px 25px;
+}

@@ -35,6 +35,39 @@
   max-width: 420px;
 }
 
+/* Botón Volver a la Landing */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(129, 140, 248, 0.3);
+  transform: translateX(-3px);
+}
+
+.btn-back i {
+  font-size: 11px;
+  transition: transform 0.3s ease;
+}
+
+.btn-back:hover i {
+  transform: translateX(-2px);
+}
+
 .login-card h2 {
   margin-bottom: 0.75rem; /* Separación ampliada del título respecto al subtítulo */
   color: #f8fafc;

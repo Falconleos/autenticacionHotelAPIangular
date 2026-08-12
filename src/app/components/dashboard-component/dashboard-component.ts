@@ -39,13 +39,13 @@ export class DashboardComponent implements OnInit {
     this.authService.logout().subscribe({
       next: () => {
         localStorage.removeItem('authToken');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']); // <--- Redirige a la landing page
       },
       error: (err) => {
         console.error('Error al cerrar sesión en el servidor:', err);
         // Si falla la red, igual limpiamos y redirigimos por seguridad local
         localStorage.removeItem('authToken');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']); // <--- Redirige a la landing page
       }
     });
   }

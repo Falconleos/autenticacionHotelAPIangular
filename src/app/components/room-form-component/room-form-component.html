@@ -1,6 +1,6 @@
 <div class="container mt-4">
   <h2>
-    <i class="fa-solid fa-door-closed me-2"></i> Nueva Habitación Física
+    <i class="fa-solid fa-door-closed me-2">&nbsp;</i> Nueva Habitación Física
   </h2>
   <p class="text-subtitle mb-4">
     Completa la información para registrar una nueva habitación en el sistema.
@@ -22,7 +22,7 @@
         <input 
           type="number" 
           id="number" 
-          class="form-control" 
+          class="form-control marginUpDown" 
           formControlName="number" 
           placeholder="Ej. 101">
       </div>
@@ -36,7 +36,7 @@
       <label for="roomTypeId" class="form-label">Tipo de Habitación *</label>
       <div class="input-group">
         <span class="input-group-text"><i class="fa-solid fa-list"></i></span>
-        <select id="roomTypeId" class="form-control custom-select" formControlName="roomTypeId">
+        <select id="roomTypeId" class="form-control custom-select marginUpDown" formControlName="roomTypeId">
           <option value="" disabled>Seleccione un tipo de habitación</option>
           <option *ngFor="let type of roomTypes" [value]="type.id">
             {{ type.name }} - Capacidad: {{ type.capacity }} - ${{ type.pricePerNight }}/noche
